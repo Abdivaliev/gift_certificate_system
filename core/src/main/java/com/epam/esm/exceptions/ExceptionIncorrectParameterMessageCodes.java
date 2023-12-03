@@ -1,6 +1,12 @@
 package com.epam.esm.exceptions;
 
-
+/**
+ * Class {@code ExceptionIncorrectParameterMessageCodes} presents keys by which messages will be taken from properties files.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 public class ExceptionIncorrectParameterMessageCodes {
     public static final String BAD_ID = "40000";
     public static final String BAD_TAG_NAME = "40001";

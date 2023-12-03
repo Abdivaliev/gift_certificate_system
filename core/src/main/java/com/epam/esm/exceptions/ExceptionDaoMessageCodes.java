@@ -1,8 +1,13 @@
 package com.epam.esm.exceptions;
-
+/**
+ * Class {@code ExceptionDaoMessageCodes} presents keys by which messages will be taken from properties files.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 
 public class ExceptionDaoMessageCodes {
-
     public static final String NO_ENTITY = "404000";
     public static final String NO_ENTITY_WITH_ID = "404001";
     public static final String NO_ENTITY_WITH_PARAMETERS = "404002";

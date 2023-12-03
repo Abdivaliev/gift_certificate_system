@@ -12,7 +12,13 @@ import static com.epam.esm.constants.ColumnNames.GIFT_CERTIFICATES;
 import static com.epam.esm.constants.ColumnNames.TAGS;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY_WITH_ID;
-
+/**
+ * Class {@code AbstractDao} is designed for basic work with database tables.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 
 public abstract class AbstractDao<T> {
     protected final JdbcTemplate jdbcTemplate;

@@ -6,7 +6,12 @@ import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.Map;
-
-
+/**
+ * Interface {@code TagService} describes abstract behavior for working with {@link Tag} objects.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 public interface TagService extends CRDService<Tag> {
 }

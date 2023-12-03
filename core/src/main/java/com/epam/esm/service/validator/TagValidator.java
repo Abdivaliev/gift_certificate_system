@@ -6,7 +6,13 @@ import lombok.experimental.UtilityClass;
 
 import static com.epam.esm.exceptions.ExceptionIncorrectParameterMessageCodes.BAD_TAG_NAME;
 
-
+/**
+ * Class {@code TagValidator} provides methods to validate fields of {@link com.epam.esm.entity.Tag}.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 @UtilityClass
 public class TagValidator {
     private final int MAX_LENGTH_NAME = 20;

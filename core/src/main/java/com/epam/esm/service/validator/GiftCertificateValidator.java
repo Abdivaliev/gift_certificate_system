@@ -11,6 +11,13 @@ import java.util.List;
 import static com.epam.esm.exceptions.ExceptionIncorrectParameterMessageCodes.*;
 
 
+/**
+ * Class {@code GiftCertificateValidator} provides methods to validate fields of {@link com.epam.esm.entity.GiftCertificate}.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 @UtilityClass
 public class GiftCertificateValidator {
     private final int MAX_LENGTH_NAME = 45;

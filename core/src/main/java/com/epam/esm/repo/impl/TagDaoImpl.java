@@ -16,7 +16,13 @@ import java.util.List;
 import static com.epam.esm.constants.ColumnNames.TAGS;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY_WITH_NAME;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.SAVING_ERROR;
-
+/**
+ * Class {@code TagDaoImpl} is implementation of interface {@link TagRepo} and intended to work with 'tags' table.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 @Repository
 public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
     private static final String INSERT_QUERY = "INSERT INTO tags(tag_name) values(?)";

@@ -23,7 +23,14 @@ import java.util.stream.Collectors;
 
 import static com.epam.esm.constants.FilterParameters.*;
 import static java.time.LocalDateTime.now;
-
+/**
+ * Class {@code GiftCertificateServiceImpl} is implementation of interface {@link GiftCertificateService}
+ * and intended to work with {@link GiftCertificate} objects.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 @Service
 public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate> implements GiftCertificateService {
     private final GiftCertificateRepo giftCertificateRepo;

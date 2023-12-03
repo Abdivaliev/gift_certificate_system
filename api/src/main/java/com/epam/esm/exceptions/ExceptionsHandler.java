@@ -12,7 +12,14 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import static com.epam.esm.exceptions.ExceptionCodes.*;
 import static org.springframework.http.HttpStatus.*;
 
-
+/**
+ * REST Controller Advice for handling exceptions.
+ * This class handles various types of exceptions and sends a structured error response to the client.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 @RestControllerAdvice
 public class ExceptionsHandler {
     @ExceptionHandler(DaoException.class)

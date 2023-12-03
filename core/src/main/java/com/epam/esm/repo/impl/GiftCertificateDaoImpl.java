@@ -23,7 +23,14 @@ import java.util.stream.Collectors;
 
 import static com.epam.esm.constants.ColumnNames.GIFT_CERTIFICATES;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.*;
-
+/**
+ * Class {@code GiftCertificateDaoImpl} is implementation of interface {@link GiftCertificateRepo}
+ * and intended to work with 'gift_certificates' table.
+ *
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 
 @Repository
 public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> implements GiftCertificateRepo {

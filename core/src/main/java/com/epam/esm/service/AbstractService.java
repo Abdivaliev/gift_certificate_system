@@ -7,7 +7,14 @@ import com.epam.esm.repo.CRDDao;
 import com.epam.esm.service.validator.IdentifiableValidator;
 
 import java.util.List;
-
+/**
+ * Class {@code AbstractService} is implementation of interface {@link CRDService} and is designed for basic work with objects.
+ *
+ * @param <T> the type parameter
+ * @author Sarvar
+ * @version 1.0
+ * @since 2023-12-03
+ */
 public abstract class AbstractService<T> implements CRDService<T> {
     protected final CRDDao<T> dao;
 
