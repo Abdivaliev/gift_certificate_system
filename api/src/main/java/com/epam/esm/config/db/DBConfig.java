@@ -13,9 +13,9 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import javax.sql.DataSource;
 
 @Configuration
-@ComponentScan("com.epam.esm")
-@PropertySource("classpath:application-dev.properties")
-public class DataBaseDevConfig {
+@PropertySource(value = "classpath:application-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
+@Profile({"prod", "dev"})
+public class DBConfig {
     @Value("${db.user}") String user;
     @Value("${db.password}") String password;
     @Value("${db.driver}") String className;

@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.epam.esm.entity.ColumnNames.GIFT_CERTIFICATES;
-import static com.epam.esm.entity.ColumnNames.TAGS;
+import static com.epam.esm.constants.ColumnNames.GIFT_CERTIFICATES;
+import static com.epam.esm.constants.ColumnNames.TAGS;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY_WITH_ID;
 

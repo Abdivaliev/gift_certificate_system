@@ -14,7 +14,7 @@ public enum ExceptionCodes {
     INTERNAL_SERVER_ERROR_EXCEPTION(50001, "INTERNAL_SERVER_ERROR");
 
     private final int code;
-    private final String reasonPhrase;
+    private final String message;
 
 
 }

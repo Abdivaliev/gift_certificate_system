@@ -1,4 +1,4 @@
-package com.epam.esm.entity;
+package com.epam.esm.constants;
 
 public class ColumnNames {
     public static final String ID = "id";

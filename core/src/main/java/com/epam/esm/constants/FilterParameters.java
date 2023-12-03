@@ -1,4 +1,4 @@
-package com.epam.esm.service;
+package com.epam.esm.constants;
 
 
 public class FilterParameters {

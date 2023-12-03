@@ -10,12 +10,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.esm.entity.ColumnNames.*;
+import static com.epam.esm.constants.ColumnNames.*;
 
 
 @Component
 public class TagRowMapper implements ResultSetExtractor<List<Tag>> {
-
 
     @Override
     public List<Tag> extractData(ResultSet rs) throws SQLException, DataAccessException {

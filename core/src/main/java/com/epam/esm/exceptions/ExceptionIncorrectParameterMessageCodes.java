@@ -2,8 +2,6 @@ package com.epam.esm.exceptions;
 
 
 public class ExceptionIncorrectParameterMessageCodes {
-
-
     public static final String BAD_ID = "40000";
     public static final String BAD_TAG_NAME = "40001";
     public static final String BAD_GIFT_CERTIFICATE_NAME = "40002";

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.epam.esm.entity.ColumnNames.*;
+import static com.epam.esm.constants.ColumnNames.*;
 
 
 @Component

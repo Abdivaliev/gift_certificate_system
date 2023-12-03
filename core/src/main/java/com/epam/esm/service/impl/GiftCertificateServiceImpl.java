@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.service.FilterParameters.*;
+import static com.epam.esm.constants.FilterParameters.*;
 import static java.time.LocalDateTime.now;
 
 @Service

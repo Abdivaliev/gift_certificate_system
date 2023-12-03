@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.epam.esm.entity.ColumnNames.*;
+import static com.epam.esm.constants.ColumnNames.*;
 
 @Component
 public class GiftCertificateRowMapper implements ResultSetExtractor<List<GiftCertificate>> {

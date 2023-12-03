@@ -16,7 +16,6 @@ public class GiftCertificateValidator {
     private final int MAX_LENGTH_NAME = 45;
     private final int MIN_LENGTH_NAME = 3;
     private final int MAX_LENGTH_DESCRIPTION = 300;
-    private final int MAX_SCALE = 2;
     private final BigDecimal MIN_PRICE = new BigDecimal("0.01");
     private final BigDecimal MAX_PRICE = new BigDecimal("999999.99");
     private final int MAX_DURATION = 366;
@@ -67,8 +66,7 @@ public class GiftCertificateValidator {
     }
 
     private void validatePrice(BigDecimal price) throws IncorrectParameterException {
-        if (price == null || price.scale() > MAX_SCALE
-                || price.compareTo(MIN_PRICE) < 0 || price.compareTo(MAX_PRICE) > 0) {
+        if (price == null || price.compareTo(MIN_PRICE) < 0 || price.compareTo(MAX_PRICE) > 0) {
             throw new IncorrectParameterException(BAD_GIFT_CERTIFICATE_PRICE);
         }
     }

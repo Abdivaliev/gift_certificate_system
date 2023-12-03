@@ -12,9 +12,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
-import static com.epam.esm.entity.ColumnNames.TAGS;
+import static com.epam.esm.constants.ColumnNames.TAGS;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY_WITH_NAME;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.SAVING_ERROR;
 

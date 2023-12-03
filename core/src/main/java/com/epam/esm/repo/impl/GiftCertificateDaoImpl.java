@@ -21,7 +21,7 @@ import java.sql.Statement;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.epam.esm.entity.ColumnNames.GIFT_CERTIFICATES;
+import static com.epam.esm.constants.ColumnNames.GIFT_CERTIFICATES;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.*;
 
 
@@ -107,7 +107,7 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
     }
 
     public String getWithParamQueryWriter(Map<String, String> fields) {
-        StringBuilder query = new StringBuilder("SELECT * FROM " + GIFT_CERTIFICATES+" gc LEFT JOIN gift_certificates_tags gct ON gc.id=gct.gift_certificate_id LEFT JOIN tags t ON gct.tag_id=t.id");
+        StringBuilder query = new StringBuilder("SELECT * FROM " + GIFT_CERTIFICATES + " gc LEFT JOIN gift_certificates_tags gct ON gc.id=gct.gift_certificate_id LEFT JOIN tags t ON gct.tag_id=t.id");
 
         if (fields.get("tag_name") != null) {
             addParameter(query, "tag_name", fields.get("tag_name"));
@@ -161,9 +161,8 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
     private void updateTags(GiftCertificate giftCertificate, long giftCertificateId) {
         if (giftCertificate.getTags() != null) {
             getTagsIds(giftCertificate.getTags())
-                    .forEach(id -> executeUpdateQuery(ADD_TAGS_QUERY, giftCertificateId, id));
+                    .forEach(tag_id -> executeUpdateQuery(ADD_TAGS_QUERY, giftCertificateId, tag_id));
         }
-
     }
 
     private List<Long> getTagsIds(List<Tag> tags) {
@@ -176,7 +175,6 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
             } catch (DaoException e) {
                 e.printStackTrace();
             }
-
             tagIds.add(tagWithId.getId());
         });
         return tagIds;
