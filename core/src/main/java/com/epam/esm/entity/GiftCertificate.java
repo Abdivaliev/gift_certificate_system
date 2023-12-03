@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * Class representing a GiftCertificate entity.
- * This class extends the Identifiable class and has fields for name, description, price, duration, created date, updated date, and a list of tags.
+ * This class extends the BaseEntity class and has fields for name, description, price, duration, created date, updated date, and a list of tags.
  * It also includes methods to set the created and updated dates with a specific date time format.
  *
  * @author Sarvavr
@@ -21,7 +21,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-public class GiftCertificate extends Identifiable {
+public class GiftCertificate extends BaseEntity {
     private String name;
     private String description;
     private BigDecimal price;
