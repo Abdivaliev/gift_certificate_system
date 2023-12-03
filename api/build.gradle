@@ -11,3 +11,8 @@ dependencies {
 }
 
 war.dependsOn explodedWar
+
+war {
+    archiveBaseName = 'gift_certificate'
+    version = '1.0'
+}

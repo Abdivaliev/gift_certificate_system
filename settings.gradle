@@ -1,4 +1,3 @@
 rootProject.name = 'gift_certificate_system'
 include 'api'
 include 'core'
-
