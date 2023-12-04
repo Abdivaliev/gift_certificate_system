@@ -1,16 +1,10 @@
 plugins{
     id 'war'
 }
-tasks.register('explodedWar', Copy) {
-    into "$buildDir/libs/exploded/${project.name}.war"
-    with war
-}
 
 dependencies {
     implementation project(":core")
 }
-
-war.dependsOn explodedWar
 
 war {
     archiveBaseName = 'gift_certificate'

@@ -6,7 +6,7 @@ import com.epam.esm.exceptions.DaoException;
 import java.util.List;
 
 /**
- * Interface {@code TagDao} describes abstract behavior for working with tags table in database.
+ * Interface {@code TagRepo} describes abstract behavior for working with tags table in database.
  *
  * @author Sarvar
  * @version 1.0

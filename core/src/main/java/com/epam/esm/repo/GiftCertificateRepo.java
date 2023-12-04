@@ -7,7 +7,7 @@ import com.epam.esm.exceptions.DaoException;
 import java.util.List;
 import java.util.Map;
 /**
- * Interface {@code GiftCertificateDao} describes abstract behavior for working with gift_certificates table in database.
+ * Interface {@code GiftCertificateRepo} describes abstract behavior for working with gift_certificates table in database.
  *
  * @author Sarvar
  * @version 1.0
