@@ -1,8 +1,6 @@
 package com.epam.esm.entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -21,6 +19,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class GiftCertificate extends BaseEntity {
     private String name;
     private String description;
@@ -50,5 +50,16 @@ public class GiftCertificate extends BaseEntity {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
         updatedDate.format(dateTimeFormatter);
         this.updatedDate = String.valueOf(updatedDate);
+    }
+
+    public GiftCertificate(Long id, String name, String description, BigDecimal price, Integer duration, String createdDate, String updatedDate, List<Tag> tags) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.tags = tags;
     }
 }
