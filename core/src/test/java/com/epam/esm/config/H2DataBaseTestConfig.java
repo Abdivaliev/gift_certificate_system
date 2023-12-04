@@ -30,7 +30,7 @@ public class H2DataBaseTestConfig {
         JdbcDataSource dataSource = new JdbcDataSource();
         dataSource.setUser(user);
         dataSource.setPassword(password);
-        dataSource.setURL(connectionUrl+ ";MODE=PostgreSQL");
+        dataSource.setURL(connectionUrl);
 
         Resource initData = new ClassPathResource("sql/init-ddl.sql");
         Resource fillData = new ClassPathResource("sql/init-dml.sql");
