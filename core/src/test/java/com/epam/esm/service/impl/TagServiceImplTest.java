@@ -1,9 +1,7 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.config.H2DataBaseTestConfig;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.exceptions.IncorrectParameterException;
 import com.epam.esm.repo.impl.TagDaoImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,9 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +30,7 @@ class TagServiceImplTest {
     Tag tag3 = new Tag(3, "rest");
 
     @Test
-    public void findById() throws DaoException, IncorrectParameterException {
+    public void findById() throws DaoException {
         when(tagDao.findById(tag3.getId())).thenReturn(tag3);
         Tag actual = tagService.findById(tag3.getId());
         Tag expected = tag3;

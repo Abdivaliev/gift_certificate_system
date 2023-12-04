@@ -2,11 +2,11 @@ package com.epam.esm.service;
 
 
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.exceptions.IncorrectParameterException;
 import com.epam.esm.repo.CRDDao;
-import com.epam.esm.service.validator.IdentifiableValidator;
+
 
 import java.util.List;
+
 /**
  * Class {@code AbstractService} is implementation of interface {@link CRDService} and is designed for basic work with objects.
  *
@@ -23,8 +23,8 @@ public abstract class AbstractService<T> implements CRDService<T> {
     }
 
     @Override
-    public T findById(long id) throws DaoException, IncorrectParameterException {
-        IdentifiableValidator.validateId(id);
+    public T findById(long id) throws DaoException {
+
         return dao.findById(id);
     }
 
@@ -34,8 +34,8 @@ public abstract class AbstractService<T> implements CRDService<T> {
     }
 
     @Override
-    public void deleteById(long id) throws DaoException, IncorrectParameterException {
-        IdentifiableValidator.validateId(id);
+    public void deleteById(long id) throws DaoException {
+
         dao.deleteById(id);
     }
 

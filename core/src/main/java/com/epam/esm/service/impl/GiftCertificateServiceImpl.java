@@ -4,13 +4,10 @@ package com.epam.esm.service.impl;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.exceptions.IncorrectParameterException;
 import com.epam.esm.repo.GiftCertificateRepo;
 import com.epam.esm.repo.TagRepo;
 import com.epam.esm.service.AbstractService;
 import com.epam.esm.service.GiftCertificateService;
-import com.epam.esm.service.validator.GiftCertificateValidator;
-import com.epam.esm.service.validator.IdentifiableValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -45,8 +42,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate>
     }
 
     @Override
-    public void save(GiftCertificate giftCertificate) throws DaoException, IncorrectParameterException {
-        GiftCertificateValidator.validate(giftCertificate);
+    public void save(GiftCertificate giftCertificate) throws DaoException {
         giftCertificate.setCreatedDate(now());
         giftCertificate.setUpdatedDate(now());
         List<Tag> requestTags = giftCertificate.getTags();
@@ -56,10 +52,8 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate>
     }
 
     @Override
-    public void update(long id, GiftCertificate giftCertificate) throws DaoException, IncorrectParameterException {
-        IdentifiableValidator.validateId(id);
+    public void update(long id, GiftCertificate giftCertificate) throws DaoException {
         giftCertificate.setId(id);
-        GiftCertificateValidator.validateForUpdate(giftCertificate);
         giftCertificate.setUpdatedDate(now());
         List<Tag> requestTags = giftCertificate.getTags();
         List<Tag> createdTags = tagRepo.findAll();

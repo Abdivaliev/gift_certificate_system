@@ -2,16 +2,13 @@ package com.epam.esm.controllers;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.exceptions.IncorrectParameterException;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST Controller for handling Tag related requests.
@@ -54,10 +51,9 @@ public class TagController {
      * @param id The ID of the tag to get.
      * @return The tag with the given ID.
      * @throws DaoException                If there is an error with the database.
-     * @throws IncorrectParameterException If the given ID is incorrect.
      */
     @GetMapping("/{id}")
-    public Tag tagById(@PathVariable("id") long id) throws DaoException, IncorrectParameterException {
+    public Tag tagById(@PathVariable("id") long id) throws DaoException {
         System.out.println("ho");
         return tagService.findById(id);
     }
@@ -68,11 +64,10 @@ public class TagController {
      * @param id The ID of the tag to delete.
      * @return ResponseEntity with the status and message.
      * @throws DaoException                If there is an error with the database.
-     * @throws IncorrectParameterException If the given ID is incorrect.
      */
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteTag(@PathVariable("id") long id) throws DaoException, IncorrectParameterException {
+    public ResponseEntity<?> deleteTag(@PathVariable("id") long id) throws DaoException {
         tagService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Success");
     }
@@ -83,10 +78,9 @@ public class TagController {
      * @param tag The tag to create.
      * @return ResponseEntity with the status and message.
      * @throws DaoException                If there is an error with the database.
-     * @throws IncorrectParameterException If the given tag is incorrect.
      */
     @PostMapping
-    public ResponseEntity<?> createTag(@RequestBody Tag tag) throws DaoException, IncorrectParameterException {
+    public ResponseEntity<?> createTag(@RequestBody Tag tag) throws DaoException {
         tagService.save(tag);
         return ResponseEntity.status(HttpStatus.CREATED).body("Success");
     }

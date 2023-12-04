@@ -1,9 +1,7 @@
 package com.epam.esm.controllers;
 
 import com.epam.esm.entity.GiftCertificate;
-import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.exceptions.IncorrectParameterException;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -54,11 +52,10 @@ public class GiftCertificateController {
      * @param id The ID of the gift certificate to get.
      * @return The gift certificate with the given ID.
      * @throws DaoException                If there is an error with the database.
-     * @throws IncorrectParameterException If the given ID is incorrect.
      */
 
     @GetMapping("/{id}")
-    public GiftCertificate giftCertificateById(@PathVariable("id") long id) throws DaoException, IncorrectParameterException {
+    public GiftCertificate giftCertificateById(@PathVariable("id") long id) throws DaoException {
         return giftCertificateService.findById(id);
     }
 
@@ -68,11 +65,10 @@ public class GiftCertificateController {
      * @param id The ID of the gift certificate to delete.
      * @return ResponseEntity with the status and message.
      * @throws DaoException                If there is an error with the database.
-     * @throws IncorrectParameterException If the given ID is incorrect.
      */
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteGiftCertificate(@PathVariable("id") long id) throws DaoException, IncorrectParameterException {
+    public ResponseEntity<?> deleteGiftCertificate(@PathVariable("id") long id) throws DaoException {
         giftCertificateService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Success");
     }
@@ -83,11 +79,10 @@ public class GiftCertificateController {
      * @param giftCertificate The gift certificate to create.
      * @return ResponseEntity with the status and message.
      * @throws DaoException                If there is an error with the database.
-     * @throws IncorrectParameterException If the given gift certificate is incorrect.
      */
     @PostMapping
     public ResponseEntity<?> createGiftCertificate(@RequestBody GiftCertificate giftCertificate)
-            throws DaoException, IncorrectParameterException {
+            throws DaoException {
         giftCertificateService.save(giftCertificate);
         return ResponseEntity.status(HttpStatus.CREATED).body("Success");
     }
@@ -99,11 +94,10 @@ public class GiftCertificateController {
      * @param giftCertificate The gift certificate with the updated values.
      * @return ResponseEntity with the status and message.
      * @throws DaoException                If there is an error with the database.
-     * @throws IncorrectParameterException If the given ID or gift certificate is incorrect.
      */
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateGiftCertificate(@PathVariable("id") long id, @RequestBody GiftCertificate giftCertificate)
-            throws DaoException, IncorrectParameterException {
+            throws DaoException {
         giftCertificateService.update(id, giftCertificate);
         return ResponseEntity.status(HttpStatus.CREATED).body("Success");
     }

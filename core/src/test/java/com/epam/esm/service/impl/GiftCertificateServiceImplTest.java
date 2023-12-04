@@ -4,7 +4,6 @@ package com.epam.esm.service.impl;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.exceptions.IncorrectParameterException;
 import com.epam.esm.repo.impl.GiftCertificateDaoImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +39,7 @@ class GiftCertificateServiceImplTest {
     String SORT_BY = "DESC";
 
     @Test
-    void findById() throws DaoException, IncorrectParameterException {
+    void findById() throws DaoException {
         when(giftCertificateDao.findById(giftCertificate2.getId())).thenReturn(giftCertificate2);
         GiftCertificate actual = giftCertificateService.findById(giftCertificate2.getId());
         GiftCertificate expected = giftCertificate2;

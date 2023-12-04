@@ -29,13 +29,6 @@ public class ExceptionsHandler {
         return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
-    @ExceptionHandler(IncorrectParameterException.class)
-    public final ResponseEntity<Object> handleIncorrectParameterExceptions(IncorrectParameterException ex) {
-        String details = Translator.toLocale(ex.getLocalizedMessage());
-        ErrorResponse errorResponse = new ErrorResponse(BAD_REQUEST_EXCEPTION.getCode(), details);
-        return new ResponseEntity<>(errorResponse, BAD_REQUEST);
-    }
-
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, JsonProcessingException.class})
     public final ResponseEntity<Object> handleBadRequestExceptions() {
         String details = Translator.toLocale("exception.badRequest");
