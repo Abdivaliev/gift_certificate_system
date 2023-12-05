@@ -1,16 +1,19 @@
 package com.epam.esm.repo;
 
+import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.exceptions.DaoException;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * Interface {@code CRUDDao} describes CRUD operations for working with database tables.
- *
- * @param <T> the type parameter
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 
 public interface CRUDDao<T> extends CRDDao<T> {
 
     void update(T item) throws DaoException;
+
+    List<GiftCertificate> findWithFilters(Map<String, String> fields) throws DaoException;
+
 }

@@ -1,10 +1,6 @@
 package com.epam.esm.exceptions;
 /**
  * Class {@code ExceptionDaoMessageCodes} presents keys by which messages will be taken from properties files.
- *
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 
 public class ExceptionDaoMessageCodes {

@@ -16,10 +16,6 @@ import javax.sql.DataSource;
  * Configuration class for setting up the database connection.
  * This class reads the database configuration from the application properties file.
  * It sets up the data source based on the active profile - 'dev' or 'prod'.
- *
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 @Configuration
 @PropertySource(value = "classpath:application-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
@@ -36,12 +32,6 @@ public class DBConfig {
     @Value("${db.connections}")
     Integer connections;
 
-    /**
-     * Sets up the data source for the 'dev' profile.
-     * It initializes the database with DDL and DML scripts.
-     *
-     * @return DataSource for the 'dev' profile.
-     */
     @Bean
     @Profile("dev")
     public DataSource dataSourceDev() {
@@ -54,12 +44,6 @@ public class DBConfig {
         return basicDataSource;
     }
 
-    /**
-     * Sets up the data source for the 'prod' profile.
-     * It initializes the database with DDL scripts.
-     *
-     * @return DataSource for the 'prod' profile.
-     */
     @Bean
     @Profile("prod")
     public DataSource dataSourceProd() {
@@ -71,11 +55,11 @@ public class DBConfig {
         return basicDataSource;
     }
 
-    /**
-     * Sets up the BasicDataSource with the properties read from the application properties file.
-     *
-     * @return BasicDataSource with the setup properties.
-     */
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
     private BasicDataSource getBasicDataSource() {
         BasicDataSource basicDataSource = new BasicDataSource();
         basicDataSource.setUsername(user);
@@ -84,16 +68,5 @@ public class DBConfig {
         basicDataSource.setUrl(connectionUrl);
         basicDataSource.setMaxActive(connections);
         return basicDataSource;
-    }
-
-    /**
-     * Sets up the JdbcTemplate with the given data source.
-     *
-     * @param dataSource The data source to set up the JdbcTemplate with.
-     * @return JdbcTemplate set up with the given data source.
-     */
-    @Bean
-    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-        return new JdbcTemplate(dataSource);
     }
 }

@@ -34,7 +34,7 @@ public class H2DataBaseTestConfig {
 
         Resource initData = new ClassPathResource("sql/init-ddl.sql");
         Resource fillData = new ClassPathResource("sql/init-dml.sql");
-        DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initData, fillData);
+        DatabasePopulator databasePopulator = new ResourceDatabasePopulator(initData,fillData);
         DatabasePopulatorUtils.execute(databasePopulator, dataSource);
         return dataSource;
     }

@@ -19,6 +19,7 @@ subprojects {
     ext.springVersion = '6.1.0'
 
     dependencies {
+        
         //SPRING
         implementation group: 'org.springframework', name: 'spring-web', version: springVersion
         implementation group: 'org.springframework', name: 'spring-webmvc', version: springVersion

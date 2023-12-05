@@ -16,12 +16,9 @@ import java.util.List;
 import static com.epam.esm.constants.ColumnNames.TAGS;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY_WITH_NAME;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.SAVING_ERROR;
+
 /**
  * Class {@code TagDaoImpl} is implementation of interface {@link TagRepo} and intended to work with 'tags' table.
- *
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 @Repository
 public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
@@ -31,16 +28,6 @@ public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
     @Autowired
     public TagDaoImpl(JdbcTemplate jdbcTemplate, ResultSetExtractor<List<Tag>> rowMapper) {
         super(jdbcTemplate, rowMapper);
-    }
-
-    @Override
-    protected String getTableName() {
-        return TAGS;
-    }
-
-    @Override
-    protected String getSelectJoiner() {
-        return "";
     }
 
     @Transactional
@@ -54,12 +41,20 @@ public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
     }
 
     @Override
-    public List<Tag> findByName(String name) throws DaoException {
+    public Tag findByName(String name) throws DaoException {
         try {
-            return executeQuery(GET_BY_NAME_QUERY, name);
+            return executeQuery(GET_BY_NAME_QUERY, name).stream().findFirst().get();
         } catch (DataAccessException e) {
             throw new DaoException(NO_ENTITY_WITH_NAME);
         }
     }
+    @Override
+    protected String getTableName() {
+        return TAGS;
+    }
 
+    @Override
+    protected String getSelectJoiner() {
+        return "";
+    }
 }

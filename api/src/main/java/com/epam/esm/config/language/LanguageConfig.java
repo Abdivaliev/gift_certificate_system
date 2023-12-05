@@ -17,27 +17,13 @@ import java.util.Locale;
  * Configuration class for setting up language support.
  * This class extends AcceptHeaderLocaleResolver and implements WebMvcConfigurer.
  * It sets up the locales and message source for internationalization (i18n).
- *
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 @Configuration
 public class LanguageConfig extends AcceptHeaderLocaleResolver implements WebMvcConfigurer {
-    /**
-     * List of supported locales.
-     */
     List<Locale> LOCALES = Arrays.asList(
             new Locale("en"),
             new Locale("ru"));
 
-    /**
-     * Resolves the locale from the 'Accept-Language' header of the HTTP request.
-     * If the header is null or empty, it returns the default locale.
-     *
-     * @param request The HTTP request to resolve the locale from.
-     * @return The resolved locale.
-     */
     @Override
     @NonNull
     public Locale resolveLocale(HttpServletRequest request) {
@@ -47,12 +33,7 @@ public class LanguageConfig extends AcceptHeaderLocaleResolver implements WebMvc
                 : Locale.lookup(Locale.LanguageRange.parse(headerLang), LOCALES);
     }
 
-    /**
-     * Sets up the ResourceBundleMessageSource with the base name 'messages',
-     * default encoding 'UTF-8', and uses code as default message.
-     *
-     * @return The set-up ResourceBundleMessageSource.
-     */
+
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource rs = new ResourceBundleMessageSource();

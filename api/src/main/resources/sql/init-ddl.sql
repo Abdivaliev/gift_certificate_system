@@ -8,15 +8,15 @@ create table gift_certificates
     description      varchar(512),
     price            numeric(16, 2) not null,
     duration         integer        not null,
-    create_date      varchar(64)    not null,
-    last_update_date varchar(64)    not null,
+    create_date      timestamp(64)  not null default now(),
+    last_update_date timestamp(64)  not null default now(),
     constraint unique_certificate_name unique (name),
     constraint positive_price check (price > (0)::numeric)
 );
 
 create table tags
 (
-    id   serial      not null primary key,
+    id       serial      not null primary key,
     tag_name varchar(64) not null,
     constraint unique_tag_name unique (tag_name)
 );

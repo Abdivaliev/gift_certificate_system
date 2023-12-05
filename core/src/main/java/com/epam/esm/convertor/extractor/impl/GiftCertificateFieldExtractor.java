@@ -13,10 +13,6 @@ import static com.epam.esm.constants.ColumnNames.*;
 /**
  * Implementation of the FieldExtractor interface for GiftCertificate.
  * This class is used to extract fields from a GiftCertificate object.
- *
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 @Component
 public class GiftCertificateFieldExtractor implements FieldExtractor<GiftCertificate> {

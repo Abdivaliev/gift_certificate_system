@@ -12,6 +12,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,33 +21,38 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 class GiftCertificateDaoImplTest {
+    private static final String SORT_BY = "DESC";
+    private static final Tag TAG_1 = new Tag(1, "gym");
+    private static final Tag TAG_2 = new Tag(2, "cheap");
+    private static final Tag TAG_3 = new Tag(3, "rest");
+    private static final Timestamp TIME = Timestamp.valueOf("2023-12-05 12:58:49.541960");
+    private static final GiftCertificate GIFT_CERTIFICATE1 =
+            new GiftCertificate(1L, "goldie's gym", "5 free visits", BigDecimal.valueOf(9.99),
+                    7, TIME, TIME, List.of(TAG_1, TAG_2));
+    private static final GiftCertificate GIFT_CERTIFICATE2 =
+            new GiftCertificate(2L, "Kfc birthday", "50% off", BigDecimal.valueOf(5.55),
+                    16, TIME, TIME, new ArrayList<>());
+    private static final GiftCertificate GIFT_CERTIFICATE3 =
+            new GiftCertificate(3L, "Silver screen", "one film", BigDecimal.valueOf(4.99),
+                    9, TIME, TIME, List.of(TAG_2, TAG_3));
+
 
     @Autowired
     private GiftCertificateDaoImpl giftCertificateDao;
 
-    Tag tag1 = new Tag(1, "gym");
-    Tag tag2 = new Tag(2, "cheap");
-    Tag tag3 = new Tag(3, "rest");
-
-    GiftCertificate giftCertificate1 = new GiftCertificate(1L,"goldie's gym", "5 free visits", BigDecimal.valueOf(9.99), 7, "2020-08-29T06:12:15.156", "2020-08-29T06:12:15.156", List.of(tag1,tag2));
-    GiftCertificate giftCertificate2 = new GiftCertificate(2L, "Kfc birthday", "50% off", BigDecimal.valueOf(5.55), 16, "2019-08-29T06:12:15.156", "2019-08-29T06:12:15.156",new ArrayList<>());
-    GiftCertificate giftCertificate3 = new GiftCertificate(3L, "Silver screen", "one film", BigDecimal.valueOf(4.99), 9, "2018-08-29T06:12:15.156", "2018-08-29T06:12:15.156", List.of(tag2,tag3));
-
-    String SORT_BY = "DESC";
 
     @Test
     void testGetById() throws DaoException {
-        GiftCertificate actual = giftCertificateDao.findById(giftCertificate2.getId());
-        GiftCertificate expected = giftCertificate2;
-
-        assertEquals(expected, actual);
+        System.out.println();
+        GiftCertificate actual = giftCertificateDao.findById(GIFT_CERTIFICATE2.getId());
+        assertEquals(GIFT_CERTIFICATE2, actual);
     }
 
     @Test
     void testGetAll() throws DaoException {
         List<GiftCertificate> actual = giftCertificateDao.findAll();
 
-        List<GiftCertificate> expected = Arrays.asList(giftCertificate1, giftCertificate2, giftCertificate3);
+        List<GiftCertificate> expected = Arrays.asList(GIFT_CERTIFICATE1, GIFT_CERTIFICATE2, GIFT_CERTIFICATE3);
         assertEquals(expected, actual);
     }
 
@@ -61,7 +67,7 @@ class GiftCertificateDaoImplTest {
         parameters.put("tag_name", null);
         parameters.put("name", null);
         List<GiftCertificate> actual = giftCertificateDao.findWithFilters(parameters);
-        List<GiftCertificate> expected = Arrays.asList(giftCertificate1, giftCertificate3);
+        List<GiftCertificate> expected = Arrays.asList(GIFT_CERTIFICATE1, GIFT_CERTIFICATE3);
 
         assertEquals(expected, actual);
     }
