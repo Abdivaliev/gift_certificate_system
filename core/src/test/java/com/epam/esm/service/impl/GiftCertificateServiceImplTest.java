@@ -15,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,6 +23,21 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GiftCertificateServiceImplTest {
+    private static final Tag TAG_1 = new Tag(1, "gym");
+    private static final Tag TAG_2 = new Tag(2, "cheap");
+    private static final Tag TAG_3 = new Tag(3, "rest");
+    private static final Timestamp TIME = Timestamp.valueOf("2023-12-05 12:58:49.541960");
+
+    private static final GiftCertificate GIFT_CERTIFICATE1 =
+            new GiftCertificate(1L, "goldie's gym", "5 free visits", BigDecimal.valueOf(9.99),
+                    7, TIME, TIME, List.of(TAG_1, TAG_2));
+    private static final GiftCertificate GIFT_CERTIFICATE2 =
+            new GiftCertificate(2L, "Kfc birthday", "50% off", BigDecimal.valueOf(5.55),
+                    16, TIME, TIME, new ArrayList<>());
+    private static final GiftCertificate GIFT_CERTIFICATE3 =
+            new GiftCertificate(3L, "Silver screen", "one film", BigDecimal.valueOf(4.99),
+                    9, TIME, TIME, List.of(TAG_2, TAG_3));
+    String SORT_BY = "DESC";
 
     @Mock
     private GiftCertificateDaoImpl giftCertificateDao = Mockito.mock(GiftCertificateDaoImpl.class);
@@ -29,27 +45,18 @@ class GiftCertificateServiceImplTest {
     @InjectMocks
     private GiftCertificateServiceImpl giftCertificateService;
 
-    Tag tag1 = new Tag(1, "gym");
-    Tag tag2 = new Tag(2, "cheap");
-    Tag tag3 = new Tag(3, "rest");
-
-    GiftCertificate giftCertificate1 = new GiftCertificate(1L, "goldie's gym", "5 free visits", BigDecimal.valueOf(9.99), 7, "2020-08-29T06:12:15.156", "2020-08-29T06:12:15.156", List.of(tag1, tag2));
-    GiftCertificate giftCertificate2 = new GiftCertificate(2L, "Kfc birthday", "50% off", BigDecimal.valueOf(5.55), 16, "2019-08-29T06:12:15.156", "2019-08-29T06:12:15.156", new ArrayList<>());
-    GiftCertificate giftCertificate3 = new GiftCertificate(3L, "Silver screen", "one film", BigDecimal.valueOf(4.99), 9, "2018-08-29T06:12:15.156", "2018-08-29T06:12:15.156", List.of(tag2, tag3));
-    String SORT_BY = "DESC";
 
     @Test
     void findById() throws DaoException {
-        when(giftCertificateDao.findById(giftCertificate2.getId())).thenReturn(giftCertificate2);
-        GiftCertificate actual = giftCertificateService.findById(giftCertificate2.getId());
-        GiftCertificate expected = giftCertificate2;
+        when(giftCertificateDao.findById(GIFT_CERTIFICATE2.getId())).thenReturn(GIFT_CERTIFICATE2);
+        GiftCertificate actual = giftCertificateService.findById(GIFT_CERTIFICATE2.getId());
 
-        assertEquals(expected, actual);
+        assertEquals(GIFT_CERTIFICATE2, actual);
     }
 
     @Test
     void findAll() throws DaoException {
-        List<GiftCertificate> giftCertificates = Arrays.asList(giftCertificate1, giftCertificate2, giftCertificate3);
+        List<GiftCertificate> giftCertificates = Arrays.asList(GIFT_CERTIFICATE1, GIFT_CERTIFICATE2, GIFT_CERTIFICATE3);
         when(giftCertificateDao.findAll()).thenReturn(giftCertificates);
         List<GiftCertificate> actual = giftCertificateService.findAll();
 
@@ -59,9 +66,9 @@ class GiftCertificateServiceImplTest {
 
     @Test
     void doFilter() throws DaoException {
-        List<GiftCertificate> giftCertificates = Arrays.asList(giftCertificate2, giftCertificate1,giftCertificate3);
+        List<GiftCertificate> giftCertificates = Arrays.asList(GIFT_CERTIFICATE2, GIFT_CERTIFICATE1, GIFT_CERTIFICATE3);
         MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-        requestParams.add("tag_name", tag2.getName());
+        requestParams.add("tag_name", TAG_2.getName());
         requestParams.add("sortByName", SORT_BY);
 
         Map<String, String> parameters = new HashMap<>();
@@ -69,7 +76,7 @@ class GiftCertificateServiceImplTest {
         parameters.put("sortByCreateDate", null);
         parameters.put("partOfDescription", null);
         parameters.put("partOfName", null);
-        parameters.put("tag_name", tag2.getName());
+        parameters.put("tag_name", TAG_2.getName());
         parameters.put("name", null);
         when(giftCertificateDao.findWithFilters(parameters)).thenReturn(giftCertificates);
         List<GiftCertificate> actual = giftCertificateService.doFilter(requestParams);

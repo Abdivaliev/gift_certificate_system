@@ -8,11 +8,6 @@ import java.util.Optional;
 
 /**
  * Interface {@code CRDDao} describes CRD operations for working with database tables.
- *
- * @param <T> the type parameter
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 public interface CRDDao<T> {
 

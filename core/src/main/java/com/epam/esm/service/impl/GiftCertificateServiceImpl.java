@@ -4,47 +4,46 @@ package com.epam.esm.service.impl;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.repo.GiftCertificateRepo;
+import com.epam.esm.repo.CRUDDao;
 import com.epam.esm.repo.TagRepo;
 import com.epam.esm.service.AbstractService;
-import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.CRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.epam.esm.constants.ColumnNames.NAME;
+import static com.epam.esm.constants.ColumnNames.TAG_NAME;
 import static com.epam.esm.constants.FilterParameters.*;
 import static java.time.LocalDateTime.now;
+
 /**
- * Class {@code GiftCertificateServiceImpl} is implementation of interface {@link GiftCertificateService}
+ * Class {@code GiftCertificateServiceImpl} is implementation of interface {@link CRUDService}
  * and intended to work with {@link GiftCertificate} objects.
- *
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 @Service
-public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate> implements GiftCertificateService {
-    private final GiftCertificateRepo giftCertificateRepo;
+public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate> implements CRUDService<GiftCertificate> {
+    private final CRUDDao<GiftCertificate> crudDao;
     private final TagRepo tagRepo;
 
     @Autowired
-    public GiftCertificateServiceImpl(TagRepo tagRepo, GiftCertificateRepo giftCertificateRepo) {
-        super(giftCertificateRepo);
+    public GiftCertificateServiceImpl(TagRepo tagRepo, CRUDDao<GiftCertificate> crudDao) {
+        super(crudDao);
         this.tagRepo = tagRepo;
-        this.giftCertificateRepo = giftCertificateRepo;
-
+        this.crudDao = crudDao;
     }
 
     @Override
     public void save(GiftCertificate giftCertificate) throws DaoException {
-        giftCertificate.setCreatedDate(now());
-        giftCertificate.setUpdatedDate(now());
+        giftCertificate.setCreatedDate(new Timestamp(System.currentTimeMillis()));
+        giftCertificate.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         List<Tag> requestTags = giftCertificate.getTags();
         List<Tag> createdTags = tagRepo.findAll();
         saveNewTags(requestTags, createdTags);
@@ -54,11 +53,11 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate>
     @Override
     public void update(long id, GiftCertificate giftCertificate) throws DaoException {
         giftCertificate.setId(id);
-        giftCertificate.setUpdatedDate(now());
+        giftCertificate.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         List<Tag> requestTags = giftCertificate.getTags();
         List<Tag> createdTags = tagRepo.findAll();
         saveNewTags(requestTags, createdTags);
-        giftCertificateRepo.update(giftCertificate);
+        crudDao.update(giftCertificate);
     }
 
     @Override
@@ -71,7 +70,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate>
         map.put(SORT_BY_NAME, getSingleParameter(fields, SORT_BY_NAME));
         map.put(SORT_BY_CREATE_DATE, getSingleParameter(fields, SORT_BY_CREATE_DATE));
 
-        return giftCertificateRepo.findWithFilters(map);
+        return crudDao.findWithFilters(map);
     }
 
     private void saveNewTags(List<Tag> requestTags, List<Tag> createdTags) throws DaoException {
@@ -90,12 +89,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate>
     }
 
     private String getSingleParameter(MultiValueMap<String, String> fields, String parameter) {
-        if (fields.containsKey(parameter)) {
-            return fields.get(parameter).get(0);
-        } else {
-            return null;
-        }
+        return fields.getFirst(parameter);
     }
-
 
 }

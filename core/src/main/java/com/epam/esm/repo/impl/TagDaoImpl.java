@@ -14,33 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.epam.esm.constants.ColumnNames.TAGS;
-import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY_WITH_NAME;
-import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.SAVING_ERROR;
+import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.*;
+
 /**
  * Class {@code TagDaoImpl} is implementation of interface {@link TagRepo} and intended to work with 'tags' table.
- *
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 @Repository
 public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
     private static final String INSERT_QUERY = "INSERT INTO tags(tag_name) values(?)";
     private static final String GET_BY_NAME_QUERY = "SELECT * FROM tags WHERE tag_name=?";
+    private static final String DELETE_RELATION_QUERY = "DELETE FROM gift_certificates_tags WHERE tag_id=?";
+    private static final String DELETE_QUERY = "DELETE FROM " + TAGS + " WHERE id=?";
+    private static final String FIND_BY_ID_QUERY = "SELECT * FROM " + TAGS + " WHERE id=? ";
 
     @Autowired
     public TagDaoImpl(JdbcTemplate jdbcTemplate, ResultSetExtractor<List<Tag>> rowMapper) {
         super(jdbcTemplate, rowMapper);
-    }
-
-    @Override
-    protected String getTableName() {
-        return TAGS;
-    }
-
-    @Override
-    protected String getSelectJoiner() {
-        return "";
     }
 
     @Transactional
@@ -54,12 +43,41 @@ public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
     }
 
     @Override
-    public List<Tag> findByName(String name) throws DaoException {
+    public Tag findByName(String name) throws DaoException {
         try {
-            return executeQuery(GET_BY_NAME_QUERY, name);
+            return executeQuery(GET_BY_NAME_QUERY, name).stream().findFirst().get();
         } catch (DataAccessException e) {
             throw new DaoException(NO_ENTITY_WITH_NAME);
         }
     }
 
+    @Transactional
+    @Override
+    public void deleteById(long id) throws DaoException {
+
+        executeUpdateQuery(DELETE_RELATION_QUERY, id);
+        int rowsAffected = jdbcTemplate.update(DELETE_QUERY, id);
+        if (rowsAffected == 0) {
+            throw new DaoException(NO_ENTITY_WITH_ID);
+        }
+    }
+
+    @Override
+    public Tag findById(long id) throws DaoException {
+        try {
+            return executeQueryAsSingleResult(FIND_BY_ID_QUERY, id);
+        } catch (DataAccessException e) {
+            throw new DaoException(NO_ENTITY_WITH_ID);
+        }
+    }
+
+    @Override
+    protected String getTableName() {
+        return TAGS;
+    }
+
+    @Override
+    protected String getSelectJoiner() {
+        return "";
+    }
 }

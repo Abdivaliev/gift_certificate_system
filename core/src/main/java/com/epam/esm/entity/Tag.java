@@ -4,10 +4,6 @@ import lombok.*;
 /**
  * Class representing a Tag entity.
  * This class extends the BaseEntity class and has a name field.
- *
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

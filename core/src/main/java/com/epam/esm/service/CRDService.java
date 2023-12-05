@@ -6,11 +6,6 @@ import java.util.List;
 
 /**
  * Interface {@code CRDService} describes CRD operations for working with objects.
- *
- * @param <T> the type parameter
- * @author Sarvar
- * @version 1.0
- * @since 2023-12-03
  */
 public interface CRDService<T> {
 

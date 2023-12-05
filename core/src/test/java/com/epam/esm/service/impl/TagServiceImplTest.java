@@ -18,29 +18,27 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceImplTest {
-
+    private static final Tag TAG_1 = new Tag(1, "gym");
+    private static final Tag TAG_2 = new Tag(2, "cheap");
+    private static final Tag TAG_3 = new Tag(3, "rest");
     @Mock
     private TagDaoImpl tagDao = Mockito.mock(TagDaoImpl.class);
 
     @InjectMocks
     private TagServiceImpl tagService;
 
-    Tag tag1 = new Tag(1, "gym");
-    Tag tag2 = new Tag(2, "cheap");
-    Tag tag3 = new Tag(3, "rest");
 
     @Test
     public void findById() throws DaoException {
-        when(tagDao.findById(tag3.getId())).thenReturn(tag3);
-        Tag actual = tagService.findById(tag3.getId());
-        Tag expected = tag3;
+        when(tagDao.findById(TAG_3.getId())).thenReturn(TAG_3);
+        Tag actual = tagService.findById(TAG_3.getId());
 
-        assertEquals(expected, actual);
+        assertEquals(TAG_3, actual);
     }
 
     @Test
     public void findAll() throws DaoException {
-        List<Tag> tags = Arrays.asList(tag1, tag2, tag3);
+        List<Tag> tags = Arrays.asList(TAG_1, TAG_2, TAG_3);
         when(tagDao.findAll()).thenReturn(tags);
         List<Tag> actual = tagService.findAll();
 
