@@ -11,6 +11,9 @@ import static com.epam.esm.constants.FilterParameters.SORT_BY_CREATE_DATE;
 
 @Component
 public class QueryWriter {
+
+    private static final String SELECT_QUERY_WITH_PARAM = "SELECT * FROM " + GIFT_CERTIFICATES + " gc LEFT JOIN gift_certificates_tags gct ON gc.id=gct.gift_certificate_id LEFT JOIN " + TAGS + " t ON gct.tag_id=t.id";
+
     protected String writeUpdateQuery(Map<String, String> fields) {
         String updates = fields.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && !entry.getKey().equals(ID))
@@ -21,7 +24,7 @@ public class QueryWriter {
     }
 
     protected String writeUpdateQueryWithParam(Map<String, String> fields) {
-        StringBuilder query = new StringBuilder("SELECT * FROM " + GIFT_CERTIFICATES + " gc LEFT JOIN gift_certificates_tags gct ON gc.id=gct.gift_certificate_id LEFT JOIN " + TAGS + " t ON gct.tag_id=t.id");
+        StringBuilder query = new StringBuilder(SELECT_QUERY_WITH_PARAM);
 
         if (fields.get(TAG_NAME) != null) {
             addParameter(query, TAG_NAME, fields.get(TAG_NAME));

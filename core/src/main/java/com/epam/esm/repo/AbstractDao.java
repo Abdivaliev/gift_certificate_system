@@ -4,14 +4,10 @@ import com.epam.esm.exceptions.DaoException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.epam.esm.constants.ColumnNames.GIFT_CERTIFICATES;
-import static com.epam.esm.constants.ColumnNames.TAGS;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY;
-import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.NO_ENTITY_WITH_ID;
 
 /**
  * Class {@code AbstractDao} is designed for basic work with database tables.

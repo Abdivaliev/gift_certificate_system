@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TagServiceImpl extends AbstractService<Tag> implements CRDService<Tag> {
 
-
     public TagServiceImpl(CRDDao<Tag> dao) {
         super(dao);
     }
