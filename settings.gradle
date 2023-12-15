@@ -1,0 +1,4 @@
+rootProject.name = 'gift_certificate_system_boot'
+
+include 'core'
+include 'api'
