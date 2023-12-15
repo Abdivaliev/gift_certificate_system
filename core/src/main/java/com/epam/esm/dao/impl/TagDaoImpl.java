@@ -1,9 +1,8 @@
-package com.epam.esm.repo.impl;
+package com.epam.esm.dao.impl;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.repo.AbstractDao;
-import com.epam.esm.repo.TagRepo;
+import com.epam.esm.dao.TagDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,19 +16,32 @@ import static com.epam.esm.constants.ColumnNames.TAGS;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.*;
 
 /**
- * Class {@code TagDaoImpl} is implementation of interface {@link TagRepo} and intended to work with 'tags' table.
+ * Class {@code TagDaoImpl} is implementation of interface {@link TagDao} and intended to work with 'tags' table.
  */
 @Repository
-public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
+public class TagDaoImpl implements TagDao {
     private static final String INSERT_QUERY = "INSERT INTO tags(tag_name) values(?)";
     private static final String GET_BY_NAME_QUERY = "SELECT * FROM tags WHERE tag_name=?";
     private static final String DELETE_RELATION_QUERY = "DELETE FROM gift_certificates_tags WHERE tag_id=?";
     private static final String DELETE_QUERY = "DELETE FROM " + TAGS + " WHERE id=?";
     private static final String FIND_BY_ID_QUERY = "SELECT * FROM " + TAGS + " WHERE id=? ";
+    private static final String FIND_ALL_QUERY = "SELECT * FROM " + TAGS;
+    protected final JdbcTemplate jdbcTemplate;
+    protected final ResultSetExtractor<List<Tag>> rowMapper;
+    @Override
+    public List<Tag> findAll() throws DaoException {
+        try {
+            return executeQuery(FIND_ALL_QUERY);
+        } catch (DataAccessException e) {
+            throw new DaoException(NO_ENTITY);
+        }
+    }
 
     @Autowired
     public TagDaoImpl(JdbcTemplate jdbcTemplate, ResultSetExtractor<List<Tag>> rowMapper) {
-        super(jdbcTemplate, rowMapper);
+
+        this.jdbcTemplate = jdbcTemplate;
+        this.rowMapper = rowMapper;
     }
 
     @Transactional
@@ -38,7 +50,7 @@ public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
         try {
             executeUpdateQuery(INSERT_QUERY, tag.getName());
         } catch (DataAccessException e) {
-            throw new DaoException(SAVING_ERROR);
+            throw new DaoException(SAVING_ERROR,e.getCause());
         }
     }
 
@@ -47,19 +59,15 @@ public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
         try {
             return executeQuery(GET_BY_NAME_QUERY, name).stream().findFirst().get();
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY_WITH_NAME);
+            throw new DaoException(NO_ENTITY_WITH_NAME,e.getCause());
         }
     }
 
     @Transactional
     @Override
-    public void deleteById(long id) throws DaoException {
-
+    public void deleteById(long id) {
         executeUpdateQuery(DELETE_RELATION_QUERY, id);
-        int rowsAffected = jdbcTemplate.update(DELETE_QUERY, id);
-        if (rowsAffected == 0) {
-            throw new DaoException(NO_ENTITY_WITH_ID);
-        }
+        jdbcTemplate.update(DELETE_QUERY, id);
     }
 
     @Override
@@ -67,17 +75,20 @@ public class TagDaoImpl extends AbstractDao<Tag> implements TagRepo {
         try {
             return executeQueryAsSingleResult(FIND_BY_ID_QUERY, id);
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY_WITH_ID);
+            throw new DaoException(NO_ENTITY_WITH_ID,e.getCause());
         }
     }
-
-    @Override
-    protected String getTableName() {
-        return TAGS;
+    private List<Tag> executeQuery(String query, Object... params) {
+        return jdbcTemplate.query(query, rowMapper, params);
     }
 
-    @Override
-    protected String getSelectJoiner() {
-        return "";
+    private Tag executeQueryAsSingleResult(String query, Object... params) {
+        List<Tag> result = executeQuery(query, params);
+        return result.stream().findFirst().orElse(null);
     }
+
+    private void executeUpdateQuery(String query, Object... params) {
+        jdbcTemplate.update(query, params);
+    }
+
 }

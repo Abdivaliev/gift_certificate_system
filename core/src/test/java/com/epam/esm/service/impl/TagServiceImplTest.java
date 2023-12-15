@@ -2,7 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.repo.impl.TagDaoImpl;
+import com.epam.esm.dao.impl.TagDaoImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

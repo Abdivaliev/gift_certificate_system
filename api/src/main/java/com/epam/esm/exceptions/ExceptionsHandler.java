@@ -21,8 +21,8 @@ public class ExceptionsHandler {
     @ExceptionHandler(DaoException.class)
     public final ResponseEntity<Object> handleDaoExceptions(DaoException ex) {
         String details = Translator.toLocale(ex.getLocalizedMessage());
-        ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND_EXCEPTION.getCode(), details);
-        return new ResponseEntity<>(errorResponse, NOT_FOUND);
+        ErrorResponse errorResponse = new ErrorResponse(INTERNAL_SERVER_ERROR_EXCEPTION.getCode(), details);
+        return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class, JsonProcessingException.class})
@@ -33,14 +33,14 @@ public class ExceptionsHandler {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public final ResponseEntity<Object> handleBadRequestException() {
+    public final ResponseEntity<Object> handleNoHandlerFoundException() {
         String details = Translator.toLocale("exception.noHandler");
         ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND_EXCEPTION.getCode(), details);
         return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public final ResponseEntity<Object> methodNotAllowedExceptionException() {
+    public final ResponseEntity<Object> handleHttpRequestMethodNotSupportedException() {
         String details = Translator.toLocale("exception.notSupported");
         ErrorResponse errorResponse = new ErrorResponse(METHOD_NOT_ALLOWED_EXCEPTION.getCode(), details);
         return new ResponseEntity<>(errorResponse, METHOD_NOT_ALLOWED);

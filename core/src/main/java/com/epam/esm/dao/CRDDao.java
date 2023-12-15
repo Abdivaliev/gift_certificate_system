@@ -1,10 +1,8 @@
-package com.epam.esm.repo;
+package com.epam.esm.dao;
 
 import com.epam.esm.exceptions.DaoException;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Interface {@code CRDDao} describes CRD operations for working with database tables.

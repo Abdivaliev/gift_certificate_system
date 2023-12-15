@@ -1,4 +1,4 @@
-package com.epam.esm.repo.impl;
+package com.epam.esm.dao.impl;
 
 import org.springframework.stereotype.Component;
 
@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import static com.epam.esm.constants.ColumnNames.*;
 import static com.epam.esm.constants.FilterParameters.*;
 import static com.epam.esm.constants.FilterParameters.SORT_BY_CREATE_DATE;
+import static com.epam.esm.constants.QueryWords.*;
 
 @Component
 public class QueryWriter {
@@ -23,7 +24,7 @@ public class QueryWriter {
         return "UPDATE " + GIFT_CERTIFICATES + " SET " + updates + " WHERE id=" + fields.get(ID);
     }
 
-    protected String writeUpdateQueryWithParam(Map<String, String> fields) {
+    protected String writeGetQueryWithParam(Map<String, String> fields) {
         StringBuilder query = new StringBuilder(SELECT_QUERY_WITH_PARAM);
 
         if (fields.get(TAG_NAME) != null) {
@@ -49,28 +50,28 @@ public class QueryWriter {
     }
 
     private void addParameter(StringBuilder query, String partParameter, String value) {
-        if (query.toString().contains("WHERE")) {
-            query.append(" AND ");
+        if (query.toString().contains(WHERE)) {
+            query.append(AND);
         } else {
-            query.append(" WHERE ");
+            query.append(" " + WHERE + " ");
         }
         query.append(partParameter).append("='").append(value).append('\'');
     }
 
     private void addPartParameter(StringBuilder query, String partParameter, String value) {
-        if (query.toString().contains("WHERE")) {
-            query.append(" AND ");
+        if (query.toString().contains(WHERE)) {
+            query.append(AND);
         } else {
-            query.append(" WHERE ");
+            query.append(" " + WHERE + " ");
         }
-        query.append(partParameter).append(" LIKE '%").append(value).append("%'");
+        query.append(partParameter).append(" " + LIKE + " '%").append(value).append("%'");
     }
 
     private void addSortParameter(StringBuilder query, String sortParameter, String value) {
-        if (query.toString().contains("ORDER BY")) {
+        if (query.toString().contains(ORDER_BY)) {
             query.append(", ");
         } else {
-            query.append(" ORDER BY ");
+            query.append(" " + ORDER_BY + " ");
         }
         query.append(sortParameter).append(" ").append(value);
     }

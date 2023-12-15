@@ -1,12 +1,11 @@
-package com.epam.esm.repo.impl;
+package com.epam.esm.dao.impl;
 
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
 import com.epam.esm.convertor.extractor.FieldExtractor;
-import com.epam.esm.repo.AbstractDao;
-import com.epam.esm.repo.CRUDDao;
-import com.epam.esm.repo.TagRepo;
+import com.epam.esm.dao.CRUDDao;
+import com.epam.esm.dao.TagDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +20,6 @@ import java.sql.Statement;
 import java.util.*;
 
 import static com.epam.esm.constants.ColumnNames.*;
-import static com.epam.esm.constants.FilterParameters.*;
 import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.*;
 
 /**
@@ -30,26 +28,42 @@ import static com.epam.esm.exceptions.ExceptionDaoMessageCodes.*;
  */
 
 @Repository
-public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> implements CRUDDao<GiftCertificate> {
-    private static final String SELECT_JOINER = " gc LEFT JOIN gift_certificates_tags gct ON " +
-            "gc.id=gct.gift_certificate_id LEFT JOIN tags t ON gct.tag_id=t.id";
+public class GiftCertificateDaoImpl implements CRUDDao<GiftCertificate> {
+    private static final String FIND_ALL_QUERY = "SELECT gc.*, json_agg(ROW(t.id,t.name)) AS tags\n" +
+            "FROM gift_certificates gc\n" +
+            "         LEFT JOIN gift_certificates_tags gct ON gc.id = gct.gift_certificate_id\n" +
+            "         LEFT JOIN tags t ON gct.tag_id = t.id\n" +
+            "GROUP BY gc.id;\n";
     private static final String ADD_TAGS_QUERY = "INSERT INTO gift_certificates_tags (gift_certificate_id,tag_id) VALUES(?,?)";
     private static final String DELETE_QUERY = "DELETE FROM " + GIFT_CERTIFICATES + " WHERE id=?";
     private static final String DELETE_RELATIONAL_QUERY = "DELETE FROM gift_certificates_tags WHERE gift_certificate_id=?";
-    private static final String FIND_BY_ID_QUERY = "SELECT * FROM " + GIFT_CERTIFICATES + SELECT_JOINER + " WHERE gc.id=?";
+    private static final String FIND_BY_ID_QUERY = "SELECT * FROM " + GIFT_CERTIFICATES + "gc LEFT JOIN gift_certificates_tags gct ON \" +\n" +
+            "            \"gc.id=gct.gift_certificate_id LEFT JOIN tags t ON gct.tag_id=t.id WHERE gc.id=?";
     private static final String INSERT_QUERY = "INSERT INTO gift_certificates(name, description, price, duration, create_date, " +
             "last_update_date) VALUES(?, ?, ?, ?, ?, ?)";
-    private final TagRepo tagRepo;
+    private final TagDao tagDao;
     private final FieldExtractor<GiftCertificate> giftCertificateFieldExtractor;
     private final QueryWriter queryWriter;
+    private final JdbcTemplate jdbcTemplate;
+    protected final ResultSetExtractor<List<GiftCertificate>> rowMapper;
 
     @Autowired
-    public GiftCertificateDaoImpl(QueryWriter queryWriter, JdbcTemplate jdbcTemplate, ResultSetExtractor<List<GiftCertificate>> rowMapper, TagRepo tagRepo,
-                                  FieldExtractor<GiftCertificate> giftCertificateFieldExtractor) {
-        super(jdbcTemplate, rowMapper);
-        this.tagRepo = tagRepo;
+    public GiftCertificateDaoImpl(QueryWriter queryWriter, JdbcTemplate jdbcTemplate, TagDao tagDao,
+                                  FieldExtractor<GiftCertificate> giftCertificateFieldExtractor, ResultSetExtractor<List<GiftCertificate>> rowMapper) {
+        this.tagDao = tagDao;
         this.giftCertificateFieldExtractor = giftCertificateFieldExtractor;
         this.queryWriter = queryWriter;
+        this.jdbcTemplate = jdbcTemplate;
+        this.rowMapper = rowMapper;
+    }
+
+    @Override
+    public List<GiftCertificate> findAll() throws DaoException {
+        try {
+            return executeQuery(FIND_ALL_QUERY);
+        } catch (DataAccessException e) {
+            throw new DaoException(NO_ENTITY);
+        }
     }
 
     @Override
@@ -57,7 +71,7 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
         try {
             return executeQueryAsSingleResult(FIND_BY_ID_QUERY, id);
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY_WITH_ID);
+            throw new DaoException(NO_ENTITY_WITH_ID, e.getRootCause());
         }
     }
 
@@ -76,9 +90,9 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
                 ps.setString(6, giftCertificate.getUpdatedDate());
                 return ps;
             }, keyHolder);
-            updateTags(giftCertificate, (int) keyHolder.getKeyList().get(0).get(ID));
+            updateTags(giftCertificate, (Long) keyHolder.getKeyList().stream().findFirst().get().get(ID));
         } catch (DataAccessException e) {
-            throw new DaoException(SAVING_ERROR);
+            throw new DaoException(SAVING_ERROR, e.getRootCause());
         }
     }
 
@@ -91,30 +105,26 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
             executeUpdateQuery(updateQuery);
             updateTags(giftCertificate, giftCertificate.getId());
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY_WITH_ID);
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED, e.getRootCause());
         }
     }
 
     @Transactional
     @Override
-    public void deleteById(long id) throws DaoException {
-
+    public void deleteById(long id) {
         jdbcTemplate.update(DELETE_RELATIONAL_QUERY, id);
-        int rowsAffected = jdbcTemplate.update(DELETE_QUERY, id);
-
-        if (rowsAffected == 0) {
-            throw new DaoException(NO_ENTITY_WITH_ID);
-        }
+        jdbcTemplate.update(DELETE_QUERY, id);
     }
 
     public List<GiftCertificate> findWithFilters(Map<String, String> fields) throws DaoException {
         try {
-            String query = queryWriter.writeUpdateQueryWithParam(fields);
+            String query = queryWriter.writeGetQueryWithParam(fields);
             return jdbcTemplate.query(query, rowMapper);
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY_WITH_PARAMETERS);
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED, e.getRootCause());
         }
     }
+
 
     private void updateTags(GiftCertificate giftCertificate, long giftCertificateId) throws DaoException {
         if (giftCertificate.getTags() != null) {
@@ -127,20 +137,22 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
         List<Long> tagIds = new ArrayList<>();
         for (Tag tag : tags) {
             String tagName = tag.getName();
-            Tag tagWithId = tagRepo.findByName(tagName);
+            Tag tagWithId = tagDao.findByName(tagName);
             tagIds.add(tagWithId.getId());
         }
         return tagIds;
     }
 
-
-    @Override
-    protected String getTableName() {
-        return GIFT_CERTIFICATES;
+    private List<GiftCertificate> executeQuery(String query, Object... params) {
+        return jdbcTemplate.query(query, rowMapper, params);
     }
 
-    @Override
-    protected String getSelectJoiner() {
-        return SELECT_JOINER;
+    private GiftCertificate executeQueryAsSingleResult(String query, Object... params) {
+        List<GiftCertificate> result = executeQuery(query, params);
+        return result.stream().findFirst().orElse(null);
+    }
+
+    private void executeUpdateQuery(String query, Object... params) {
+        jdbcTemplate.update(query, params);
     }
 }

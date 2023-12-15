@@ -2,7 +2,7 @@ package com.epam.esm.service;
 
 
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.repo.CRDDao;
+import com.epam.esm.dao.CRDDao;
 
 
 import java.util.List;
