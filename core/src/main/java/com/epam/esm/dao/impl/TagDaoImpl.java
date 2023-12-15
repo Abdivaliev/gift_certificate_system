@@ -33,7 +33,7 @@ public class TagDaoImpl implements TagDao {
         try {
             return executeQuery(FIND_ALL_QUERY);
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY);
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED,e.getRootCause());
         }
     }
 
@@ -50,7 +50,7 @@ public class TagDaoImpl implements TagDao {
         try {
             executeUpdateQuery(INSERT_QUERY, tag.getName());
         } catch (DataAccessException e) {
-            throw new DaoException(SAVING_ERROR,e.getCause());
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED,e.getCause());
         }
     }
 
@@ -59,7 +59,7 @@ public class TagDaoImpl implements TagDao {
         try {
             return executeQuery(GET_BY_NAME_QUERY, name).stream().findFirst().get();
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY_WITH_NAME,e.getCause());
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED,e.getCause());
         }
     }
 
@@ -75,7 +75,7 @@ public class TagDaoImpl implements TagDao {
         try {
             return executeQueryAsSingleResult(FIND_BY_ID_QUERY, id);
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY_WITH_ID,e.getCause());
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED,e.getCause());
         }
     }
     private List<Tag> executeQuery(String query, Object... params) {

@@ -62,7 +62,7 @@ public class GiftCertificateDaoImpl implements CRUDDao<GiftCertificate> {
         try {
             return executeQuery(FIND_ALL_QUERY);
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY);
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED,e.getRootCause());
         }
     }
 
@@ -71,7 +71,7 @@ public class GiftCertificateDaoImpl implements CRUDDao<GiftCertificate> {
         try {
             return executeQueryAsSingleResult(FIND_BY_ID_QUERY, id);
         } catch (DataAccessException e) {
-            throw new DaoException(NO_ENTITY_WITH_ID, e.getRootCause());
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED, e.getRootCause());
         }
     }
 
@@ -92,7 +92,7 @@ public class GiftCertificateDaoImpl implements CRUDDao<GiftCertificate> {
             }, keyHolder);
             updateTags(giftCertificate, (Long) keyHolder.getKeyList().stream().findFirst().get().get(ID));
         } catch (DataAccessException e) {
-            throw new DaoException(SAVING_ERROR, e.getRootCause());
+            throw new DaoException(ACCESS_TO_RESOURCE_LIMITED, e.getRootCause());
         }
     }
 
