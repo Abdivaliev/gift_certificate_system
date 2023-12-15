@@ -1,9 +1,9 @@
-package com.epam.esm.repo.impl;
+package com.epam.esm.dao.impl;
 
 import com.epam.esm.config.H2DataBaseTestConfig;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.repo.TagRepo;
+import com.epam.esm.dao.TagDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +24,12 @@ class TagDaoImplTest {
     private static final Tag TAG_2 = new Tag(2, "cheap");
     private static final Tag TAG_3 = new Tag(3, "rest");
     @Autowired
-    private TagRepo tagRepo;
+    private TagDao tagDao;
 
 
     @Test
     public void findAll() throws DaoException {
-        List<Tag> actual = tagRepo.findAll();
+        List<Tag> actual = tagDao.findAll();
         List<Tag> expected = Arrays.asList(TAG_2, TAG_1, TAG_3);
 
         assertEquals(expected, actual);
@@ -37,13 +37,13 @@ class TagDaoImplTest {
 
     @Test
     void findById() throws DaoException {
-        Tag actual = tagRepo.findById(TAG_3.getId());
+        Tag actual = tagDao.findById(TAG_3.getId());
         assertEquals(TAG_3, actual);
     }
 
     @Test
     void findByName() throws DaoException {
-        Tag actual = tagRepo.findByName(TAG_1.getName());
+        Tag actual = tagDao.findByName(TAG_1.getName());
 
         assertEquals(TAG_1, actual);
     }

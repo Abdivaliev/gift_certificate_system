@@ -4,8 +4,8 @@ package com.epam.esm.service.impl;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.repo.CRUDDao;
-import com.epam.esm.repo.TagRepo;
+import com.epam.esm.dao.CRUDDao;
+import com.epam.esm.dao.TagDao;
 import com.epam.esm.service.AbstractService;
 import com.epam.esm.service.CRUDService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +31,12 @@ import static java.time.LocalDateTime.now;
 @Service
 public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate> implements CRUDService<GiftCertificate> {
     private final CRUDDao<GiftCertificate> crudDao;
-    private final TagRepo tagRepo;
+    private final TagDao tagDao;
 
     @Autowired
-    public GiftCertificateServiceImpl(TagRepo tagRepo, CRUDDao<GiftCertificate> crudDao) {
+    public GiftCertificateServiceImpl(TagDao tagDao, CRUDDao<GiftCertificate> crudDao) {
         super(crudDao);
-        this.tagRepo = tagRepo;
+        this.tagDao = tagDao;
         this.crudDao = crudDao;
     }
 
@@ -45,7 +45,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate>
         giftCertificate.setCreatedDate(new Timestamp(System.currentTimeMillis()));
         giftCertificate.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         List<Tag> requestTags = giftCertificate.getTags();
-        List<Tag> createdTags = tagRepo.findAll();
+        List<Tag> createdTags = tagDao.findAll();
         saveNewTags(requestTags, createdTags);
         dao.save(giftCertificate);
     }
@@ -55,7 +55,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate>
         giftCertificate.setId(id);
         giftCertificate.setUpdatedDate(new Timestamp(System.currentTimeMillis()));
         List<Tag> requestTags = giftCertificate.getTags();
-        List<Tag> createdTags = tagRepo.findAll();
+        List<Tag> createdTags = tagDao.findAll();
         saveNewTags(requestTags, createdTags);
         crudDao.update(giftCertificate);
     }
@@ -80,10 +80,9 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate>
         Set<String> createdTagNames = createdTags.stream()
                 .map(Tag::getName)
                 .collect(Collectors.toSet());
-
         for (Tag requestTag : requestTags) {
             if (!createdTagNames.contains(requestTag.getName())) {
-                tagRepo.save(requestTag);
+                tagDao.save(requestTag);
             }
         }
     }

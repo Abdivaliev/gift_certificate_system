@@ -3,7 +3,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.repo.CRDDao;
+import com.epam.esm.dao.CRDDao;
 import com.epam.esm.service.AbstractService;
 import com.epam.esm.service.CRDService;
 import org.springframework.stereotype.Service;

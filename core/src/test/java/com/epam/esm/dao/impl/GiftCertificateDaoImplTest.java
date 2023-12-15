@@ -1,4 +1,4 @@
-package com.epam.esm.repo.impl;
+package com.epam.esm.dao.impl;
 
 import com.epam.esm.config.H2DataBaseTestConfig;
 import com.epam.esm.entity.GiftCertificate;

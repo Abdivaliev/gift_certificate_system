@@ -1,13 +1,11 @@
-package com.epam.esm.repo;
+package com.epam.esm.dao;
 
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exceptions.DaoException;
 
-import java.util.List;
-
 /**
  * Interface {@code TagRepo} describes abstract behavior for working with tags table in database.
  */
-public interface TagRepo extends CRDDao<Tag> {
+public interface TagDao extends CRDDao<Tag> {
     Tag findByName(String name) throws DaoException;
 }

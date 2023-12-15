@@ -24,8 +24,8 @@ public class TagRowMapper implements ResultSetExtractor<List<Tag>> {
         rs.next();
         while (!rs.isAfterLast()) {
             Tag tag = new Tag();
-            tag.setId(rs.getLong(ID));
-            tag.setName(rs.getString(TAG_NAME));
+            tag.setId(rs.getLong(1));
+            tag.setName(rs.getString(2));
             tags.add(tag);
             rs.next();
         }

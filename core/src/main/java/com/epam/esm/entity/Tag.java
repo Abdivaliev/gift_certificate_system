@@ -10,9 +10,7 @@ import lombok.*;
 @ToString(callSuper = true)
 @NoArgsConstructor
 public class Tag extends BaseEntity {
-
     private String name;
-
     public Tag(long tagId, String tagName) {
         super(tagId);
         this.name=tagName;
