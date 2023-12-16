@@ -1,27 +1,31 @@
 package com.epam.esm;
 
-import com.epam.esm.service.MyService;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication(scanBasePackages = "com.epam.esm")
-@RestController
-public class ApiApplication {
+public class ApiApplication implements CommandLineRunner {
+    private final Generator generator;
 
-	private final MyService myService;
+    public ApiApplication(Generator generator) {
+        this.generator = generator;
+    }
 
-	public ApiApplication(MyService myService) {
-		this.myService = myService;
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ApiApplication.class, args);
+    }
 
-	@GetMapping("/")
-	public String home() {
-		return myService.message();
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(ApiApplication.class, args);
-	}
+    @Override
+    public void run(String... args) throws Exception {
+//        Thread.sleep(1000);
+//        generator.save1000Tags();
+//        Thread.sleep(1000);
+//        generator.save1000Users();
+//        Thread.sleep(1000);
+//        generator.save10000Gifts();
+//        Thread.sleep(1000);
+//        generator.save1000Orders();
+    }
 }
