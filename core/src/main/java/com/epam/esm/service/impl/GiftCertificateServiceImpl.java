@@ -2,7 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.Pageable;
+import com.epam.esm.dto.PageRequest;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.exception.*;
 import com.epam.esm.service.updater.Updater;
@@ -136,7 +136,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        Pageable pageRequest = createPageRequest(page, size);
+        PageRequest pageRequest = new PageRequest(page,size);
         return giftCertificateDao.findWithFilters(requestParams, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
     }
 

@@ -1,7 +1,7 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dao.CRDDao;
-import com.epam.esm.dto.Pageable;
+import com.epam.esm.dto.PageRequest;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.exception.ExceptionMessageKey;
 import com.epam.esm.exception.ExceptionResult;
@@ -44,7 +44,7 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
     @Override
     @Transactional
     public List<D> findAll(int page, int size) {
-        Pageable pageRequest = createPageRequest(page, size);
+        PageRequest pageRequest = new PageRequest(page, size);
         return dao.findAll(pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
     }
 
@@ -63,12 +63,6 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
         }
 
         dao.deleteById(id);
-    }
-
-    protected Pageable createPageRequest(int page, int size) {
-        Pageable pageable = new Pageable(page,size);
-        return pageable;
-
     }
 
     protected String getSingleParameter(MultiValueMap<String, String> fields, String parameter) {

@@ -6,11 +6,11 @@ import com.epam.esm.exception.IncorrectParameterException;
 import lombok.Getter;
 
 @Getter
-public class Pageable {
-    private int offset;
+public class PageRequest {
+    private final int offset;
     private final int pageSize;
 
-    public Pageable(int page, int size) {
+    public PageRequest(int page, int size) {
         if (page < 1 || size < 0) {
             ExceptionResult exceptionResult = new ExceptionResult();
             exceptionResult.addException(ExceptionMessageKey.INVALID_PAGINATION, page,size);

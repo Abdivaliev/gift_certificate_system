@@ -64,14 +64,14 @@ public class ExceptionsHandler {
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public final ResponseEntity<Object> handleBadRequestException() {
+    public final ResponseEntity<Object> handleNoHandlerFoundException() {
         String details = Translator.toLocale("exception.noHandler");
         ErrorResponse errorResponse = new ErrorResponse(NOT_FOUND_EXCEPTION.toString(), details);
         return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public final ResponseEntity<Object> methodNotAllowedExceptionException() {
+    public final ResponseEntity<Object> handleHttpRequestMethodNotSupportedException() {
         String details = Translator.toLocale("exception.notSupported");
         ErrorResponse errorResponse = new ErrorResponse(METHOD_NOT_ALLOWED_EXCEPTION.toString(), details);
         return new ResponseEntity<>(errorResponse, METHOD_NOT_ALLOWED);

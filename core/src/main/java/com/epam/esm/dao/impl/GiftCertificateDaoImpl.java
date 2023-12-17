@@ -3,7 +3,7 @@ package com.epam.esm.dao.impl;
 import com.epam.esm.dao.AbstractDao;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.writer.QueryWriter;
-import com.epam.esm.dto.Pageable;
+import com.epam.esm.dto.PageRequest;
 import com.epam.esm.entity.GiftCertificate;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.MultiValueMap;
@@ -33,13 +33,13 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
     }
 
     @Override
-    public List<GiftCertificate> findWithFilters(MultiValueMap<String, String> fields, Pageable pageable) {
+    public List<GiftCertificate> findWithFilters(MultiValueMap<String, String> fields, PageRequest pageableDTo) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> criteriaQuery = queryWriter.writeGetQueryWithParam(fields, criteriaBuilder);
 
         return entityManager.createQuery(criteriaQuery)
-                .setFirstResult(pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
+                .setFirstResult(pageableDTo.getOffset())
+                .setMaxResults(pageableDTo.getPageSize())
                 .getResultList();
     }
 }

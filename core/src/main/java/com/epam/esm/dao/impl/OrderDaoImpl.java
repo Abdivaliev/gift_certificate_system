@@ -2,7 +2,7 @@ package com.epam.esm.dao.impl;
 
 import com.epam.esm.dao.AbstractDao;
 import com.epam.esm.dao.OrderDao;
-import com.epam.esm.dto.Pageable;
+import com.epam.esm.dto.PageRequest;
 import com.epam.esm.entity.Order;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -23,11 +23,11 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
 
 
     @Override
-    public List<Order> findAllByUserId(long userId, Pageable pageable) {
+    public List<Order> findAllByUserId(long userId, PageRequest pageableDTo) {
         return entityManager.createQuery(FIND_ALL_BY_USER_ID_QUERY, entityType)
                 .setParameter("user_id", userId)
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
+                .setFirstResult((int) pageableDTo.getOffset())
+                .setMaxResults(pageableDTo.getPageSize())
                 .getResultList();
     }
 

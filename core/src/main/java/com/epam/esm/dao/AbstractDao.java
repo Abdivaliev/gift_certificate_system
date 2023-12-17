@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-import com.epam.esm.dto.Pageable;
+import com.epam.esm.dto.PageRequest;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -22,10 +22,10 @@ public abstract class AbstractDao<T> {
         return Optional.ofNullable(entityManager.find(entityType, id));
     }
 
-    public List<T> findAll(Pageable pageable) {
+    public List<T> findAll(PageRequest pageableDTo) {
         return entityManager.createQuery("SELECT e FROM " + entityType.getSimpleName() + " e", entityType)
-                .setFirstResult(pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
+                .setFirstResult(pageableDTo.getOffset())
+                .setMaxResults(pageableDTo.getPageSize())
                 .getResultList();
     }
 

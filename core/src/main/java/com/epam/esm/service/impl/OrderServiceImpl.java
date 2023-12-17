@@ -4,7 +4,7 @@ import com.epam.esm.dao.CRDDao;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.OrderDto;
-import com.epam.esm.dto.Pageable;
+import com.epam.esm.dto.PageRequest;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
@@ -77,7 +77,7 @@ public class OrderServiceImpl extends AbstractService<Order,OrderDto> implements
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
             throw new IncorrectParameterException(exceptionResult);
         }
-        Pageable pageRequest = createPageRequest(page, size);
+        PageRequest pageRequest = new PageRequest(page,size);
 
          return orderDao.findAllByUserId(userId, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
     }

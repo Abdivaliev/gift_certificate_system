@@ -26,7 +26,7 @@ public class GiftCertificateConverter implements Converter<GiftCertificate, Gift
         giftCertificate.setPrice(dto.getPrice());
         giftCertificate.setDuration(dto.getDuration());
 
-        if (dto.getTags()!=null) {
+        if (dto.getTags() != null) {
             giftCertificate.setTags(
                     dto.getTags().stream().map(converter::convertToEntity).collect(Collectors.toSet())
             );
@@ -47,9 +47,9 @@ public class GiftCertificateConverter implements Converter<GiftCertificate, Gift
         giftCertificateDto.setCreateDate(entity.getCreatedDate());
         giftCertificateDto.setUpdatedDate(entity.getUpdatedDate());
 
-            giftCertificateDto.setTags(
-                    entity.getTags().stream().map(converter::convertToDto).collect(Collectors.toSet())
-            );
+        giftCertificateDto.setTags(
+                entity.getTags().stream().map(converter::convertToDto).collect(Collectors.toSet())
+        );
 
         return giftCertificateDto;
     }
