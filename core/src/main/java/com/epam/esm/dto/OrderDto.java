@@ -19,7 +19,9 @@ public class OrderDto extends RepresentationModel<OrderDto> {
     private long id;
     private BigDecimal price;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime purchaseTime;
+    private LocalDateTime createDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime updatedDate;
     private long userId;
     private long giftCertificateId;
 }

@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.Pageable;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.exception.*;
 import com.epam.esm.service.updater.Updater;
@@ -12,11 +13,12 @@ import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.validator.GiftCertificateValidator;
 import com.epam.esm.service.validator.IdentifiableValidator;
 import com.epam.esm.service.validator.TagValidator;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
+
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,7 +27,6 @@ import static com.epam.esm.constant.ColumnNames.NAME;
 import static com.epam.esm.constant.ColumnNames.TAG_NAME;
 import static com.epam.esm.constant.FilterParameters.SORT_BY_CREATE_DATE;
 import static com.epam.esm.constant.FilterParameters.SORT_BY_NAME;
-import static java.time.LocalDateTime.now;
 
 @Service
 public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate, GiftCertificateDto> implements GiftCertificateService {
@@ -45,21 +46,20 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
     @Override
     @Transactional
     public GiftCertificateDto save(GiftCertificateDto giftCertificateDto) {
-        GiftCertificate giftCertificate = converter.convertToEntity(giftCertificateDto);
         ExceptionResult exceptionResult = new ExceptionResult();
-        GiftCertificateValidator.validate(giftCertificate, exceptionResult);
+        GiftCertificateValidator.validate(giftCertificateDto, exceptionResult);
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        String giftCertificateName = giftCertificate.getName();
+        String giftCertificateName = giftCertificateDto.getName();
         boolean isGiftCertificateExist = giftCertificateDao.findByName(giftCertificateName).isPresent();
         if (isGiftCertificateExist) {
             throw new DuplicateEntityException(ExceptionMessageKey.GIFT_CERTIFICATE_EXIST);
         }
 
-        giftCertificate.setCreatedDate(now());
-        giftCertificate.setUpdatedDate(now());
+        GiftCertificate giftCertificate = converter.convertToEntity(giftCertificateDto);
+
         Set<Tag> tagsToPersist = tagUpdater.updateListFromDatabase(giftCertificate.getTags());
         giftCertificate.setTags(tagsToPersist);
 
@@ -86,10 +86,9 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
     @Override
     @Transactional
     public GiftCertificateDto update(long id, GiftCertificateDto giftCertificateDto) {
-        GiftCertificate giftCertificate = converter.convertToEntity(giftCertificateDto);
         ExceptionResult exceptionResult = new ExceptionResult();
         IdentifiableValidator.validateId(id, exceptionResult);
-        GiftCertificateValidator.validateForUpdate(giftCertificate, exceptionResult);
+        GiftCertificateValidator.validateForUpdate(giftCertificateDto, exceptionResult);
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
             throw new IncorrectParameterException(exceptionResult);
         }
@@ -98,11 +97,13 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
         if (oldGiftCertificate.isEmpty()) {
             throw new NoSuchEntityException(ExceptionMessageKey.NO_ENTITY);
         }
-        String giftCertificateName = giftCertificate.getName();
+        String giftCertificateName = giftCertificateDto.getName();
         boolean isGiftCertificateExist = giftCertificateDao.findByName(giftCertificateName).isPresent();
         if (isGiftCertificateExist && !oldGiftCertificate.get().getName().equals(giftCertificateName)) {
             throw new DuplicateEntityException(ExceptionMessageKey.GIFT_CERTIFICATE_EXIST);
         }
+
+        GiftCertificate giftCertificate = converter.convertToEntity(giftCertificateDto);
 
         giftCertificate.setTags(tagUpdater.updateListFromDatabase(giftCertificate.getTags()));
         GiftCertificate newGiftCertificate = giftCertificateUpdater.updateObject(giftCertificate, oldGiftCertificate.get());
@@ -110,7 +111,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<GiftCertificateDto> doFilter(MultiValueMap<String, String> requestParams, int page, int size) {
         ExceptionResult exceptionResult = new ExceptionResult();
         String name = getSingleParameter(requestParams, NAME);

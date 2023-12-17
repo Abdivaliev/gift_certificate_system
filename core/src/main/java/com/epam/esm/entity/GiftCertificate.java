@@ -5,10 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.envers.Audited;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -21,14 +19,12 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "gift_certificates")
-@Audited
 public class GiftCertificate extends BaseEntity {
     private String name;
     private String description;
     private BigDecimal price;
     private Integer duration;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
+
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(

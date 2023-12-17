@@ -1,5 +1,7 @@
 package com.epam.esm.service.validator;
 
+import com.epam.esm.dto.GiftCertificateDto;
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionResult;
@@ -23,35 +25,35 @@ public class GiftCertificateValidator {
     private final int MIN_DURATION = 1;
 
 
-    public void validate(GiftCertificate giftCertificate, ExceptionResult er) {
-        IdentifiableValidator.validateExistenceOfId(giftCertificate.getId(), er);
-        validateName(giftCertificate.getName(), er);
-        validateDescription(giftCertificate.getDescription(), er);
-        validatePrice(giftCertificate.getPrice(), er);
-        validateDuration(giftCertificate.getDuration(), er);
-        validateListOfTags(giftCertificate.getTags(), er);
+    public void validate(GiftCertificateDto giftCertificateDto, ExceptionResult er) {
+        IdentifiableValidator.validateExistenceOfId(giftCertificateDto.getId(), er);
+        validateName(giftCertificateDto.getName(), er);
+        validateDescription(giftCertificateDto.getDescription(), er);
+        validatePrice(giftCertificateDto.getPrice(), er);
+        validateDuration(giftCertificateDto.getDuration(), er);
+        validateListOfTags(giftCertificateDto.getTags(), er);
     }
 
-    public void validateForUpdate(GiftCertificate giftCertificate, ExceptionResult er) {
-        if (giftCertificate.getName() != null) {
-            validateName(giftCertificate.getName(), er);
+    public void validateForUpdate(GiftCertificateDto giftCertificateDto, ExceptionResult er) {
+        if (giftCertificateDto.getName() != null) {
+            validateName(giftCertificateDto.getName(), er);
         }
-        if (giftCertificate.getDescription() != null) {
-            validateDescription(giftCertificate.getDescription(), er);
+        if (giftCertificateDto.getDescription() != null) {
+            validateDescription(giftCertificateDto.getDescription(), er);
         }
-        if (giftCertificate.getPrice() != null) {
-            validatePrice(giftCertificate.getPrice(), er);
+        if (giftCertificateDto.getPrice() != null) {
+            validatePrice(giftCertificateDto.getPrice(), er);
         }
-        if (giftCertificate.getDuration() != 0) {
-            validateDuration(giftCertificate.getDuration(), er);
+        if (giftCertificateDto.getDuration() != 0) {
+            validateDuration(giftCertificateDto.getDuration(), er);
         }
-        validateListOfTags(giftCertificate.getTags(), er);
+        validateListOfTags(giftCertificateDto.getTags(), er);
     }
 
 
-    public void validateListOfTags(Set<Tag> tags, ExceptionResult er) {
-        if (tags == null) return;
-        for (Tag tag : tags) {
+    public void validateListOfTags(Set<TagDto> tagDtoSets, ExceptionResult er) {
+        if (tagDtoSets == null) return;
+        for (TagDto tag : tagDtoSets) {
             TagValidator.validate(tag, er);
         }
     }

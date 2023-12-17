@@ -1,4 +1,4 @@
-rootProject.name = 'gift_certificate_system_boot'
+rootProject.name = 'gift_certificate_system'
 
 include 'core'
 include 'api'

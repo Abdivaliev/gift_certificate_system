@@ -4,6 +4,7 @@ import com.epam.esm.dao.CRDDao;
 import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dao.OrderDao;
 import com.epam.esm.dto.OrderDto;
+import com.epam.esm.dto.Pageable;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Order;
@@ -15,7 +16,6 @@ import com.epam.esm.service.AbstractService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.validator.OrderValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import static com.epam.esm.exception.ExceptionMessageKey.GIFT_CERTIFICATE_NOT_FOUND;
 import static com.epam.esm.exception.ExceptionMessageKey.USER_NOT_FOUND;
-import static java.time.LocalDateTime.now;
+
 
 @Service
 public class OrderServiceImpl extends AbstractService<Order,OrderDto> implements OrderService {
@@ -45,27 +45,28 @@ public class OrderServiceImpl extends AbstractService<Order,OrderDto> implements
     @Override
     @Transactional
     public OrderDto save(OrderDto orderDto) {
-        Order order = converter.convertToEntity(orderDto);
         ExceptionResult exceptionResult = new ExceptionResult();
-        OrderValidator.validate(order, exceptionResult);
+        OrderValidator.validate(orderDto, exceptionResult);
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        Optional<User> optionalUser = userDao.findById(order.getUser().getId());
+        Optional<User> optionalUser = userDao.findById(orderDto.getUserId());
         if (optionalUser.isEmpty()) {
             throw new NoSuchEntityException(USER_NOT_FOUND);
         }
-        order.setUser(optionalUser.get());
 
-        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(order.getGiftCertificate().getId());
+        Optional<GiftCertificate> optionalGiftCertificate = giftCertificateDao.findById(orderDto.getGiftCertificateId());
         if (optionalGiftCertificate.isEmpty()) {
             throw new NoSuchEntityException(GIFT_CERTIFICATE_NOT_FOUND);
         }
+
+        Order order = converter.convertToEntity(orderDto);
+
+        order.setUser(optionalUser.get());
         order.setGiftCertificate(optionalGiftCertificate.get());
 
         order.setPurchaseCost(optionalGiftCertificate.get().getPrice());
-        order.setPurchaseTime(now());
         return converter.convertToDto(dao.save(order));
     }
 

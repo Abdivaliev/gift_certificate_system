@@ -1,10 +1,7 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.GiftCertificateDto;
-//import com.epam.esm.exceptions.DaoException;
-import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.hateoas.HateoasAdder;
-import com.epam.esm.service.CRUDService;
 import com.epam.esm.service.GiftCertificateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +27,8 @@ public class GiftCertificateController {
 
 
     @GetMapping(consumes = "application/json", produces = "application/json")
-    public List<GiftCertificateDto> findAll(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+    @ResponseStatus(HttpStatus.OK)
+    public List<GiftCertificateDto> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                             @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
         List<GiftCertificateDto> certificateDtoList = giftCertificateService.findAll(page, size);
         return certificateDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());
@@ -38,10 +36,10 @@ public class GiftCertificateController {
 
 
     @GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public GiftCertificateDto findById(@PathVariable("id") long id) {
         GiftCertificateDto giftCertificateDto = giftCertificateService.findById(id);
-        hateoasAdder.addLinks(giftCertificateDto);
-        return giftCertificateDto;
+        return hateoasAdder.addLinks(giftCertificateDto);
     }
 
 
@@ -53,22 +51,25 @@ public class GiftCertificateController {
 
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<?> save(@RequestBody GiftCertificateDto giftCertificateDto) {
-        giftCertificateService.save(giftCertificateDto);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Success");
+    @ResponseStatus(HttpStatus.OK)
+    public GiftCertificateDto save(@RequestBody GiftCertificateDto giftCertificateDto) {
+        GiftCertificateDto savedDto = giftCertificateService.save(giftCertificateDto);
+        return hateoasAdder.addLinks(savedDto);
     }
 
     @PatchMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public GiftCertificateDto update(@PathVariable("id") long id, @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto updatedDto = giftCertificateService.update(id, giftCertificateDto);
-        hateoasAdder.addLinks(updatedDto);
-        return updatedDto;
+        return hateoasAdder.addLinks(updatedDto);
     }
 
     @GetMapping(path = "/filter", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public List<GiftCertificateDto> getGiftCertificatesByParameter(@RequestParam MultiValueMap<String, String> allRequestParams,
-                                                                @RequestParam(value = "page", defaultValue = "0", required = false) int page,
-                                                                @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
-        return giftCertificateService.doFilter(allRequestParams, page, size);
+                                                                   @RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                                   @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
+        List<GiftCertificateDto> certificateDtoList = giftCertificateService.doFilter(allRequestParams, page, size);
+        return certificateDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());
     }
 }

@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.envers.Audited;
-
 
 import java.util.Set;
 
@@ -15,7 +13,6 @@ import java.util.Set;
 @Data
 @Table(name = "users")
 @Entity
-@Audited
 public class User extends BaseEntity {
     private String name;
 

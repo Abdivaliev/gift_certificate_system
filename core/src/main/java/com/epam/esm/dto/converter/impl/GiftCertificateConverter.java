@@ -6,11 +6,8 @@ import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.Collectors;
-
-import static java.time.LocalDateTime.now;
 
 
 @Component
@@ -24,15 +21,16 @@ public class GiftCertificateConverter implements Converter<GiftCertificate, Gift
     @Override
     public GiftCertificate convertToEntity(GiftCertificateDto dto) {
         GiftCertificate giftCertificate = new GiftCertificate();
-        giftCertificate.setCreatedDate(now());
-        giftCertificate.setUpdatedDate(now());
         giftCertificate.setName(dto.getName());
         giftCertificate.setDescription(dto.getDescription());
         giftCertificate.setPrice(dto.getPrice());
         giftCertificate.setDuration(dto.getDuration());
-        giftCertificate.setTags(
-                dto.getTagDtos().stream().map(converter::convertToEntity).collect(Collectors.toSet())
-        );
+
+        if (dto.getTags()!=null) {
+            giftCertificate.setTags(
+                    dto.getTags().stream().map(converter::convertToEntity).collect(Collectors.toSet())
+            );
+        }
 
         return giftCertificate;
     }
@@ -48,9 +46,10 @@ public class GiftCertificateConverter implements Converter<GiftCertificate, Gift
         giftCertificateDto.setDuration(entity.getDuration());
         giftCertificateDto.setCreateDate(entity.getCreatedDate());
         giftCertificateDto.setUpdatedDate(entity.getUpdatedDate());
-        giftCertificateDto.setTagDtos(
-                entity.getTags().stream().map(converter::convertToDto).collect(Collectors.toSet())
-        );
+
+            giftCertificateDto.setTags(
+                    entity.getTags().stream().map(converter::convertToDto).collect(Collectors.toSet())
+            );
 
         return giftCertificateDto;
     }

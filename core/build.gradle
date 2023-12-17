@@ -14,8 +14,10 @@ dependencyManagement {
 dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter'
-    runtimeOnly 'org.postgresql:postgresql'
-    implementation 'org.hibernate:hibernate-envers:6.4.0.Final'
+
+    //used for transaction management and hibernate jpa impl
+    implementation 'org.springframework:spring-orm:6.1.2'
+    implementation 'org.hibernate.orm:hibernate-core:6.4.0.Final'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'com.h2database:h2'

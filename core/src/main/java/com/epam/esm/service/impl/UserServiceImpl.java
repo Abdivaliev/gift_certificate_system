@@ -6,6 +6,7 @@ import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.User;
 import com.epam.esm.service.AbstractService;
 import com.epam.esm.service.CRDService;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl extends AbstractService<User, UserDto> implements CRDService<UserDto> {
 
 
-    public UserServiceImpl(CRDDao<User> dao, Converter<User, UserDto> converter, CRDDao<User> userCRDDao) {
+    public UserServiceImpl(CRDDao<User> dao, Converter<User, UserDto> converter) {
         super(dao, converter);
 
     }
@@ -21,7 +22,6 @@ public class UserServiceImpl extends AbstractService<User, UserDto> implements C
     @Override
     @Transactional
     public UserDto save(UserDto dto) {
-        User user = converter.convertToEntity(dto);
-        return converter.convertToDto(dao.save(user));
+        throw new UnsupportedOperationException();
     }
 }

@@ -23,6 +23,8 @@ public class TagConverter implements Converter<Tag, TagDto> {
 
         tagDto.setId(entity.getId());
         tagDto.setName(entity.getName());
+        tagDto.setCreateDate(entity.getCreatedDate());
+        tagDto.setUpdatedDate(entity.getUpdatedDate());
 
         return tagDto;
     }

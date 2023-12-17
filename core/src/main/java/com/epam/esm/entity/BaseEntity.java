@@ -1,16 +1,33 @@
 package com.epam.esm.entity;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDateTime;
+
+import static java.time.LocalDateTime.now;
 
 @Data
 @MappedSuperclass
-public abstract class BaseEntity{
+public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "crated_date",updatable = false)
+    private LocalDateTime createdDate;
+    @Column(name = "updated_date")
+    private LocalDateTime updatedDate;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdDate = now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedDate = now();
+    }
+
 }
 

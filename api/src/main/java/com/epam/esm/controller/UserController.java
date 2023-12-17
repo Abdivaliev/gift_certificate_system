@@ -35,7 +35,7 @@ public class UserController {
 
     @GetMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> findAll(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+    public List<UserDto> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                  @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
         List<UserDto> userDtoList = userService.findAll(page, size);
         return userDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());

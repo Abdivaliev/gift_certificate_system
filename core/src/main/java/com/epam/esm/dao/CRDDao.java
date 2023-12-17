@@ -1,6 +1,6 @@
 package com.epam.esm.dao;
 
-import org.springframework.data.domain.Pageable;
+import com.epam.esm.dto.Pageable;
 
 import java.util.List;
 import java.util.Optional;

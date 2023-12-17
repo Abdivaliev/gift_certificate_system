@@ -5,7 +5,6 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.hibernate.envers.Audited;
 
 /**
  * Class representing a Tag entity.
@@ -16,7 +15,7 @@ import org.hibernate.envers.Audited;
 @Data
 @Entity
 @Table(name = "tags")
-@Audited
 public class Tag extends BaseEntity {
     private String name;
+
 }

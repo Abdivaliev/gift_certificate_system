@@ -1,5 +1,6 @@
 package com.epam.esm.service.validator;
 
+import com.epam.esm.dto.TagDto;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.ExceptionResult;
 import lombok.experimental.UtilityClass;
@@ -13,9 +14,9 @@ public class TagValidator {
     private final int MIN_LENGTH_NAME = 3;
 
 
-    public void validate(Tag tag, ExceptionResult er) {
-        IdentifiableValidator.validateExistenceOfId(tag.getId(), er);
-        validateName(tag.getName(), er);
+    public void validate(TagDto tagDto, ExceptionResult er) {
+        IdentifiableValidator.validateExistenceOfId(tagDto.getId(), er);
+        validateName(tagDto.getName(), er);
     }
 
     public void validateName(String name, ExceptionResult er) {

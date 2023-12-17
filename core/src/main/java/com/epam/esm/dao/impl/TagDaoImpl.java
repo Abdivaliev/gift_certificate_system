@@ -6,8 +6,8 @@ import com.epam.esm.entity.Tag;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,10 +24,8 @@ public class TagDaoImpl extends AbstractDao<Tag> implements TagDao {
     }
 
     @Override
-    public Optional<Tag> findMostUsedTag() {
+    public List<Tag> findMostUsedTag() {
         return entityManager.createQuery(FIND_MOST_WIDELY_USED_TAG, entityType)
-                .setMaxResults(1)
-                .getResultList().stream()
-                .findFirst();
+                .getResultList();
     }
 }

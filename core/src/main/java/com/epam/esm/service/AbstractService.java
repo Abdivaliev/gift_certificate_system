@@ -1,16 +1,16 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dao.CRDDao;
+import com.epam.esm.dto.Pageable;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.exception.ExceptionMessageKey;
 import com.epam.esm.exception.ExceptionResult;
 import com.epam.esm.exception.IncorrectParameterException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.service.validator.IdentifiableValidator;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public D findById(long id) {
         ExceptionResult exceptionResult = new ExceptionResult();
         IdentifiableValidator.validateId(id, exceptionResult);
@@ -42,10 +42,10 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public List<D> findAll(int page, int size) {
         Pageable pageRequest = createPageRequest(page, size);
-         return dao.findAll(pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+        return dao.findAll(pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
     }
 
     @Override
@@ -66,15 +66,9 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
     }
 
     protected Pageable createPageRequest(int page, int size) {
-        Pageable pageRequest;
-        try {
-            pageRequest = PageRequest.of(page, size);
-        } catch (IllegalArgumentException e) {
-            ExceptionResult exceptionResult = new ExceptionResult();
-            exceptionResult.addException(ExceptionMessageKey.INVALID_PAGINATION, page, size);
-            throw new IncorrectParameterException(exceptionResult);
-        }
-        return pageRequest;
+        Pageable pageable = new Pageable(page,size);
+        return pageable;
+
     }
 
     protected String getSingleParameter(MultiValueMap<String, String> fields, String parameter) {

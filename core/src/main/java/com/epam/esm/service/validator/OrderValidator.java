@@ -1,6 +1,6 @@
 package com.epam.esm.service.validator;
 
-import com.epam.esm.entity.Order;
+import com.epam.esm.dto.OrderDto;
 import com.epam.esm.exception.ExceptionResult;
 import lombok.experimental.UtilityClass;
 
@@ -12,10 +12,10 @@ public class OrderValidator {
     private final int MIN_ID = 1;
 
 
-    public void validate(Order order, ExceptionResult er) {
-        IdentifiableValidator.validateExistenceOfId(order.getId(), er);
-        validateUserId(order.getUser().getId(), er);
-        validateGiftCertificateId(order.getGiftCertificate().getId(), er);
+    public void validate(OrderDto orderDto, ExceptionResult er) {
+        IdentifiableValidator.validateExistenceOfId(orderDto.getId(), er);
+        validateUserId(orderDto.getUserId(), er);
+        validateGiftCertificateId(orderDto.getGiftCertificateId(), er);
     }
 
     public void validateUserId(long userId, ExceptionResult er) {

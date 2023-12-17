@@ -1,4 +1,4 @@
-package com.epam.esm.config.language;
+package com.epam.esm.exception.language;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;

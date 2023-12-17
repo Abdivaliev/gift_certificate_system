@@ -44,7 +44,6 @@ public class Generator {
                 for (String word : words) {
                     TagDto tagDto = new TagDto();
                     tagDto.setName(word);
-                    System.out.println(word);
                     tagService.save(tagDto);
                     limit++;
                 }
@@ -66,7 +65,6 @@ public class Generator {
                     if (limit > 999) {
                         UserDto userDto = new UserDto();
                         userDto.setName(word);
-                        System.out.println(word);
                         userDtoCRDService.save(userDto);
                     }
                     limit++;
@@ -99,11 +97,10 @@ public class Generator {
                         tagDto = tagService.findById(randomTag);
                         setTag.add(tagDto);
                     }
-                    giftCertificateDto.setTagDtos(setTag);
+                    giftCertificateDto.setTags(setTag);
                     giftCertificateDto.setPrice(BigDecimal.valueOf(randomPrice));
                     giftCertificateDto.setDescription(word + "  " + randomScale + "  " + tagDto.getName());
                     giftCertificateCRDService.save(giftCertificateDto);
-
                 }
             }
         } catch (IOException e) {

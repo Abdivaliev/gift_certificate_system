@@ -2,7 +2,6 @@ package com.epam.esm.controller;
 
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.hateoas.HateoasAdder;
-import com.epam.esm.service.CRDService;
 import com.epam.esm.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,36 +29,38 @@ public class TagController {
 
 
     @GetMapping(consumes = "application/json", produces = "application/json")
-    public List<TagDto> findAll(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
+    @ResponseStatus(HttpStatus.OK)
+    public List<TagDto> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                 @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
         List<TagDto> tagDtoList = tagService.findAll(page, size);
         return tagDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());
     }
 
     @GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
     public TagDto findById(@PathVariable("id") long id) {
         TagDto tagDto = tagService.findById(id);
-        hateoasAdder.addLinks(tagDto);
-        return tagDto;
+        return hateoasAdder.addLinks(tagDto);
     }
 
-    @GetMapping(path = "/most-used",consumes = "application/json", produces = "application/json")
-    public TagDto findMostUsedTag() {
-        TagDto tagDto = tagService.findMostUsedTag();
-        hateoasAdder.addLinks(tagDto);
-        return tagDto;
+    @GetMapping(path = "/most-used", consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<TagDto> findMostUsedTag() {
+        List<TagDto> tagDtoList = tagService.findMostUsedTag();
+        return tagDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());
     }
 
     @DeleteMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<?> delete(@PathVariable("id") long id) {
         tagService.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
+    @ResponseStatus(HttpStatus.CREATED)
     public TagDto save(@RequestBody TagDto tagDto) {
-        return tagService.save(tagDto);
+        TagDto savedDTO = tagService.save(tagDto);
+        return hateoasAdder.addLinks(savedDTO);
     }
 
 }

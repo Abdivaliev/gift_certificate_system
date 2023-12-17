@@ -1,7 +1,7 @@
 package com.epam.esm.exception;
 
 
-import com.epam.esm.config.language.Translator;
+import com.epam.esm.exception.language.Translator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;

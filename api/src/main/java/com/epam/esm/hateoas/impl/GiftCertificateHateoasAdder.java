@@ -5,6 +5,8 @@ import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.hateoas.HateoasAdder;
+import com.epam.esm.service.GiftCertificateService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -17,8 +19,7 @@ public class GiftCertificateHateoasAdder implements HateoasAdder<GiftCertificate
     private static final Class<TagController> TAG_CONTROLLER = TagController.class;
 
     @Override
-    public void addLinks(GiftCertificateDto giftCertificateDto) {
-        if (giftCertificateDto!=null) {
+    public GiftCertificateDto addLinks(GiftCertificateDto giftCertificateDto) {
             giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
                     .findById(giftCertificateDto.getId())).withSelfRel());
             giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
@@ -26,9 +27,10 @@ public class GiftCertificateHateoasAdder implements HateoasAdder<GiftCertificate
             giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
                     .delete(giftCertificateDto.getId())).withRel("delete"));
             giftCertificateDto.add(linkTo(methodOn(CONTROLLER).save(giftCertificateDto)).withRel("save"));
-            giftCertificateDto.getTagDtos().forEach(
+            giftCertificateDto.getTags().forEach(
                     tagDto -> tagDto.add(linkTo(methodOn(TAG_CONTROLLER).findById(tagDto.getId())).withSelfRel()));
-        }
+
+        return giftCertificateDto;
     }
 }
 
