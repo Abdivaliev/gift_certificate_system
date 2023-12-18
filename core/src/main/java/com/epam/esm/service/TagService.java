@@ -1,9 +1,10 @@
 package com.epam.esm.service;
 
+import com.epam.esm.dto.MostUsedTagDto;
 import com.epam.esm.dto.TagDto;
 
 import java.util.List;
 
 public interface TagService extends CRDService<TagDto> {
-    List<TagDto> findMostUsedTag();
+    List<MostUsedTagDto> findMostUsedTagByUserId(Long userId);
 }

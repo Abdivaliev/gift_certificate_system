@@ -8,7 +8,7 @@ import java.util.Optional;
 public interface CRDDao<T> {
     Optional<T> findById(long id) ;
 
-    List<T> findAll(PageRequest pageableDTo) ;
+    List<T> findAll(PageRequest pageRequest) ;
     T save(T item) ;
     void deleteById(long id) ;
 

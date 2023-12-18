@@ -6,6 +6,8 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.CRDService;
 import com.epam.esm.service.OrderService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
@@ -19,19 +21,20 @@ import java.util.Random;
 import java.util.Set;
 
 @Service
-public class Generator {
+@RequiredArgsConstructor
+public class Generator implements CommandLineRunner {
     private final ResourceLoader resourceLoader;
     private final CRDService<TagDto> tagService;
     private final OrderService orderService;
     private final CRDService<GiftCertificateDto> giftCertificateCRDService;
     private final CRDService<UserDto> userDtoCRDService;
 
-    public Generator(ResourceLoader resourceLoader, CRDService<TagDto> tagService, OrderService orderService, CRDService<GiftCertificateDto> giftCertificateCRDService, CRDService<UserDto> userDtoCRDService) {
-        this.resourceLoader = resourceLoader;
-        this.tagService = tagService;
-        this.orderService = orderService;
-        this.giftCertificateCRDService = giftCertificateCRDService;
-        this.userDtoCRDService = userDtoCRDService;
+    @Override
+    public void run(String... args) throws Exception {
+//        save1000Tags();
+//        save10000Gifts();
+//        save1000Users();
+//        save1000rders();
     }
 
     public void save1000Tags() {
@@ -108,7 +111,7 @@ public class Generator {
         }
     }
 
-    public void save1000Orders() {
+    public void save1000rders() {
         for (int i = 0; i < 1000; i++) {
             int randomUser = new Random().nextInt(1000) + 1;
             int randomGift = new Random().nextInt(10000) + 1;
@@ -116,8 +119,10 @@ public class Generator {
             orderDto.setUserId(userDtoCRDService.findById(randomUser).getId());
             GiftCertificateDto certificateDto = giftCertificateCRDService.findById(randomGift);
             orderDto.setGiftCertificateId(certificateDto.getId());
-            orderDto.setPrice(certificateDto.getPrice());
+            orderDto.setPurchaseCost(certificateDto.getPrice());
             orderService.save(orderDto);
         }
     }
+
+
 }

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface GiftCertificateDao extends CRUDDao<GiftCertificate> {
     Optional<GiftCertificate> findByName(String name);
-    List<GiftCertificate> findWithFilters(MultiValueMap<String, String> fields, PageRequest pageableDTo);
+    List<GiftCertificate> findWithFilters(MultiValueMap<String, String> fields, PageRequest pageRequest);
 }

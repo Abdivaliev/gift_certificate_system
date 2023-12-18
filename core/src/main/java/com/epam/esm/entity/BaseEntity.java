@@ -16,16 +16,20 @@ public abstract class BaseEntity {
 
     @Column(name = "crated_date",updatable = false)
     private LocalDateTime createdDate;
+
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+
+
+
     @PrePersist
-    public void prePersist() {
+    public void createDate() {
         this.createdDate = now();
     }
 
     @PreUpdate
-    public void preUpdate() {
+    public void updateDate() {
         this.updatedDate = now();
     }
 

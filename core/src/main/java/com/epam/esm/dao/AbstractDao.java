@@ -22,10 +22,10 @@ public abstract class AbstractDao<T> {
         return Optional.ofNullable(entityManager.find(entityType, id));
     }
 
-    public List<T> findAll(PageRequest pageableDTo) {
+    public List<T> findAll(PageRequest pageRequest) {
         return entityManager.createQuery("SELECT e FROM " + entityType.getSimpleName() + " e", entityType)
-                .setFirstResult(pageableDTo.getOffset())
-                .setMaxResults(pageableDTo.getPageSize())
+                .setFirstResult(pageRequest.getOffset())
+                .setMaxResults(pageRequest.getPageSize())
                 .getResultList();
     }
 

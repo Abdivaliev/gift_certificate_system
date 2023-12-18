@@ -19,5 +19,4 @@ public class PageRequest {
         this.offset = (page - 1) * size;
         this.pageSize = size;
     }
-
 }

@@ -9,8 +9,6 @@ import com.epam.esm.exception.IncorrectParameterException;
 import com.epam.esm.exception.NoSuchEntityException;
 import com.epam.esm.service.validator.IdentifiableValidator;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +24,7 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public D findById(long id) {
         ExceptionResult exceptionResult = new ExceptionResult();
         IdentifiableValidator.validateId(id, exceptionResult);
@@ -42,7 +40,7 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<D> findAll(int page, int size) {
         PageRequest pageRequest = new PageRequest(page, size);
         return dao.findAll(pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
@@ -57,15 +55,11 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        Optional<E> foundEntity = dao.findById(id);
-        if (foundEntity.isEmpty()) {
+        Optional<E> optionalEntity = dao.findById(id);
+        if (optionalEntity.isEmpty()) {
             throw new NoSuchEntityException(ExceptionMessageKey.NO_ENTITY);
         }
 
         dao.deleteById(id);
-    }
-
-    protected String getSingleParameter(MultiValueMap<String, String> fields, String parameter) {
-        return fields.getFirst(parameter);
     }
 }

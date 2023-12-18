@@ -33,13 +33,13 @@ public class GiftCertificateDaoImpl extends AbstractDao<GiftCertificate> impleme
     }
 
     @Override
-    public List<GiftCertificate> findWithFilters(MultiValueMap<String, String> fields, PageRequest pageableDTo) {
+    public List<GiftCertificate> findWithFilters(MultiValueMap<String, String> fields, PageRequest pageRequest) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<GiftCertificate> criteriaQuery = queryWriter.writeGetQueryWithParam(fields, criteriaBuilder);
 
         return entityManager.createQuery(criteriaQuery)
-                .setFirstResult(pageableDTo.getOffset())
-                .setMaxResults(pageableDTo.getPageSize())
+                .setFirstResult(pageRequest.getOffset())
+                .setMaxResults(pageRequest.getPageSize())
                 .getResultList();
     }
 }

@@ -55,7 +55,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
         String giftCertificateName = giftCertificateDto.getName();
         boolean isGiftCertificateExist = giftCertificateDao.findByName(giftCertificateName).isPresent();
         if (isGiftCertificateExist) {
-            throw new DuplicateEntityException(ExceptionMessageKey.GIFT_CERTIFICATE_EXIST);
+            throw new ExistingEntityException(ExceptionMessageKey.GIFT_CERTIFICATE_EXIST);
         }
 
         GiftCertificate giftCertificate = converter.convertToEntity(giftCertificateDto);
@@ -100,7 +100,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
         String giftCertificateName = giftCertificateDto.getName();
         boolean isGiftCertificateExist = giftCertificateDao.findByName(giftCertificateName).isPresent();
         if (isGiftCertificateExist && !oldGiftCertificate.get().getName().equals(giftCertificateName)) {
-            throw new DuplicateEntityException(ExceptionMessageKey.GIFT_CERTIFICATE_EXIST);
+            throw new ExistingEntityException(ExceptionMessageKey.GIFT_CERTIFICATE_EXIST);
         }
 
         GiftCertificate giftCertificate = converter.convertToEntity(giftCertificateDto);
@@ -111,7 +111,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<GiftCertificateDto> doFilter(MultiValueMap<String, String> requestParams, int page, int size) {
         ExceptionResult exceptionResult = new ExceptionResult();
         String name = getSingleParameter(requestParams, NAME);
@@ -136,9 +136,11 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        PageRequest pageRequest = new PageRequest(page,size);
+        PageRequest pageRequest = new PageRequest(page, size);
         return giftCertificateDao.findWithFilters(requestParams, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
     }
 
-
+    private String getSingleParameter(MultiValueMap<String, String> fields, String parameter) {
+        return fields.getFirst(parameter);
+    }
 }

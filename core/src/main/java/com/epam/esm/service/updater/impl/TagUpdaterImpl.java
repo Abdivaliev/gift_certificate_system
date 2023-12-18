@@ -18,12 +18,6 @@ public class TagUpdaterImpl implements Updater<Tag> {
     }
 
     @Override
-    public Tag updateObject(Tag newTag, Tag oldTag) {
-        throw new UnsupportedOperationException();
-    }
-
-
-    @Override
     public Set<Tag> updateListFromDatabase(Set<Tag> newListOfTags) {
         if (newListOfTags == null) {
             return new HashSet<>();
@@ -31,6 +25,11 @@ public class TagUpdaterImpl implements Updater<Tag> {
         return newListOfTags.stream()
                 .map(tag -> tagDao.findByName(tag.getName()).orElse(tag))
                 .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Tag updateObject(Tag newTag, Tag oldTag) {
+        throw new UnsupportedOperationException();
     }
 
 }

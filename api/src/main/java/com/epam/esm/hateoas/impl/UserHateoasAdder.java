@@ -15,8 +15,7 @@ public class UserHateoasAdder implements HateoasAdder<UserDto> {
     private static final Class<UserController> CONTROLLER = UserController.class;
 
     @Override
-    public UserDto addLinks(UserDto userDto)  {
-            userDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).findById(userDto.getId())).withSelfRel());
-        return userDto;
+    public void addLinks(UserDto userDto) {
+        userDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).findById(userDto.getId())).withSelfRel());
     }
 }

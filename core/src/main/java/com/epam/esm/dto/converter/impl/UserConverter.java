@@ -23,7 +23,7 @@ public class UserConverter implements Converter<User, UserDto> {
 
         userDto.setId(entity.getId());
         userDto.setName(entity.getName());
-        userDto.setCreateDate(entity.getCreatedDate());
+        userDto.setCreatedDate(entity.getCreatedDate());
         userDto.setUpdatedDate(entity.getUpdatedDate());
 
         return userDto;

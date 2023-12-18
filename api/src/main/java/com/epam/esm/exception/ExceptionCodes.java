@@ -1,6 +1,9 @@
 package com.epam.esm.exception;
 
 
+import lombok.Getter;
+
+@Getter
 public enum ExceptionCodes {
     BAD_REQUEST_EXCEPTION(40001, "BAD_REQUEST"),
     NOT_FOUND_EXCEPTION(40401, "NOT_FOUND"),
@@ -9,26 +12,16 @@ public enum ExceptionCodes {
     INTERNAL_SERVER_ERROR_EXCEPTION(50001, "INTERNAL_SERVER_ERROR");
 
     private final int code;
-    private final String reasonPhrase;
+    private final String reason;
 
-    ExceptionCodes(int code, String reasonPhrase) {
+    ExceptionCodes(int code, String reason) {
         this.code = code;
-        this.reasonPhrase = reasonPhrase;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getReasonPhrase() {
-        return reasonPhrase;
+        this.reason = reason;
     }
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(code).append(" ");
-        sb.append(reasonPhrase);
-        return sb.toString();
+        return code + " " +
+                reason;
     }
 }
