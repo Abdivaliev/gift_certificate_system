@@ -1,9 +1,13 @@
 package com.epam.esm.exception;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@AllArgsConstructor
+@ToString
 public enum ExceptionCodes {
     BAD_REQUEST_EXCEPTION(40001, "BAD_REQUEST"),
     NOT_FOUND_EXCEPTION(40401, "NOT_FOUND"),
@@ -13,15 +17,4 @@ public enum ExceptionCodes {
 
     private final int code;
     private final String reason;
-
-    ExceptionCodes(int code, String reason) {
-        this.code = code;
-        this.reason = reason;
-    }
-
-    @Override
-    public String toString() {
-        return code + " " +
-                reason;
-    }
 }

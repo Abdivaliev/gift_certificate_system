@@ -5,8 +5,6 @@ import com.epam.esm.controller.GiftCertificateController;
 import com.epam.esm.controller.TagController;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.hateoas.HateoasAdder;
-import com.epam.esm.service.GiftCertificateService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;

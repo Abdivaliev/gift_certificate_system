@@ -1,20 +1,18 @@
-package com.epam.esm.dao.impl;
+package com.epam.esm.repo;
 
-import com.epam.esm.dao.AbstractDao;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.entity.Tag;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Tuple;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Repository
-public class TagDaoImpl extends AbstractDao<Tag> implements TagDao {
-    private static final String FIND_MOST_WIDELY_USED_TAG = "WITH UserTagCosts AS (SELECT u.id         AS user_id,\n" +
+public interface TagRepo extends JpaRepository<Tag, Long> {
+    String query ="WITH UserTagCosts AS (SELECT u.id         AS user_id,\n" +
             "                             t.id         as tag_id,\n" +
             "                             t.name       AS tag_name,\n" +
             "                             COUNT(*)     AS tag_count,\n" +
@@ -37,27 +35,11 @@ public class TagDaoImpl extends AbstractDao<Tag> implements TagDao {
             "                                 FROM UserTagCosts);";
 
 
-    @PersistenceContext
-    protected EntityManager entityManager;
+    Optional<Tag> findByName(String name);
 
-    protected TagDaoImpl() {
-        super(Tag.class);
-    }
+    @Query(value = query, nativeQuery = true)
+    List<Tuple> findMostUsedTagByUserId(@Param("userId") Long userId);
 
-    @Override
-    public Map<List<?>, List<?>> findMostUsedTagByUserId(Long userId) {
-
-        List<?> resultList = entityManager.createNativeQuery(FIND_MOST_WIDELY_USED_TAG, Tuple.class)
-                .setParameter("userId", userId)
-                .getResultList();
-
-        List<?> explanations = entityManager.createNativeQuery("EXPLAIN " + FIND_MOST_WIDELY_USED_TAG, Tuple.class)
-                .setParameter("userId", userId)
-                .getResultList();
-
-        Map<List<?>, List<?>> result = new HashMap<>();
-        result.put(resultList, explanations);
-
-        return result;
-    }
+    @Query(value = "EXPLAIN " + query, nativeQuery = true)
+    List<Tuple> findMostUsedTagByUserIdExplanation(@Param("userId") Long userId);
 }

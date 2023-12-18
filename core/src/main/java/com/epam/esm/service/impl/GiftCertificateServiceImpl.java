@@ -1,69 +1,88 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.PageRequest;
 import com.epam.esm.dto.converter.Converter;
-import com.epam.esm.exception.*;
-import com.epam.esm.service.updater.Updater;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
-import com.epam.esm.service.AbstractService;
+import com.epam.esm.exception.*;
+import com.epam.esm.repo.GiftCertificateRepo;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.updater.Updater;
 import com.epam.esm.service.validator.GiftCertificateValidator;
 import com.epam.esm.service.validator.IdentifiableValidator;
 import com.epam.esm.service.validator.TagValidator;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
-
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.epam.esm.constant.ColumnNames.NAME;
 import static com.epam.esm.constant.ColumnNames.TAG_NAME;
-import static com.epam.esm.constant.FilterParameters.SORT_BY_CREATE_DATE;
-import static com.epam.esm.constant.FilterParameters.SORT_BY_NAME;
+import static com.epam.esm.constant.FilterParameters.*;
 
 @Service
-public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate, GiftCertificateDto> implements GiftCertificateService {
-    private final GiftCertificateDao giftCertificateDao;
-
+public class GiftCertificateServiceImpl implements GiftCertificateService {
+    private final GiftCertificateRepo giftCertificateRepo;
+    private final Converter<GiftCertificate, GiftCertificateDto> converter;
     private final Updater<GiftCertificate> giftCertificateUpdater;
     private final Updater<Tag> tagUpdater;
 
-    @Autowired
-    public GiftCertificateServiceImpl(GiftCertificateDao giftCertificateDao, Converter<GiftCertificate, GiftCertificateDto> converter, Updater<GiftCertificate> giftCertificateUpdater, Updater<Tag> tagUpdater) {
-        super(giftCertificateDao, converter);
-        this.giftCertificateDao = giftCertificateDao;
+    public GiftCertificateServiceImpl(GiftCertificateRepo giftCertificateRepo, Converter<GiftCertificate, GiftCertificateDto> converter, Updater<GiftCertificate> giftCertificateUpdater, Updater<Tag> tagUpdater) {
+        this.giftCertificateRepo = giftCertificateRepo;
+        this.converter = converter;
         this.giftCertificateUpdater = giftCertificateUpdater;
         this.tagUpdater = tagUpdater;
     }
 
     @Override
-    @Transactional
-    public GiftCertificateDto save(GiftCertificateDto giftCertificateDto) {
+    @Transactional(readOnly = true)
+    public GiftCertificateDto findById(long id) {
         ExceptionResult exceptionResult = new ExceptionResult();
-        GiftCertificateValidator.validate(giftCertificateDto, exceptionResult);
+        IdentifiableValidator.validateId(id, exceptionResult);
+        if (!exceptionResult.getExceptionMessages().isEmpty()) {
+            throw new IncorrectParameterException(exceptionResult);
+        }
+        Optional<GiftCertificate> optionalEntity = giftCertificateRepo.findById(id);
+        if (optionalEntity.isEmpty()) {
+            throw new NoSuchEntityException(ExceptionMessageKey.NO_ENTITY);
+        }
+
+        return converter.convertToDto(optionalEntity.get());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<GiftCertificateDto> findAll(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return giftCertificateRepo.findAll(pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public GiftCertificateDto save(GiftCertificateDto dto) {
+        ExceptionResult exceptionResult = new ExceptionResult();
+        GiftCertificateValidator.validate(dto, exceptionResult);
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        String giftCertificateName = giftCertificateDto.getName();
-        boolean isGiftCertificateExist = giftCertificateDao.findByName(giftCertificateName).isPresent();
+        String giftCertificateName = dto.getName();
+        boolean isGiftCertificateExist = giftCertificateRepo.findByName(giftCertificateName).isPresent();
         if (isGiftCertificateExist) {
             throw new ExistingEntityException(ExceptionMessageKey.GIFT_CERTIFICATE_EXIST);
         }
 
-        GiftCertificate giftCertificate = converter.convertToEntity(giftCertificateDto);
+        GiftCertificate giftCertificate = converter.convertToEntity(dto);
 
         Set<Tag> tagsToPersist = tagUpdater.updateListFromDatabase(giftCertificate.getTags());
         giftCertificate.setTags(tagsToPersist);
 
-        return converter.convertToDto(dao.save(giftCertificate));
+        return converter.convertToDto(giftCertificateRepo.save(giftCertificate));
     }
 
     @Override
@@ -75,12 +94,12 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        Optional<GiftCertificate> foundGiftCertificate = giftCertificateDao.findById(id);
+        Optional<GiftCertificate> foundGiftCertificate = giftCertificateRepo.findById(id);
         if (foundGiftCertificate.isEmpty()) {
             throw new NoSuchEntityException(ExceptionMessageKey.NO_ENTITY);
         }
 
-        giftCertificateDao.deleteById(id);
+        giftCertificateRepo.deleteById(id);
     }
 
     @Override
@@ -93,12 +112,12 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        Optional<GiftCertificate> oldGiftCertificate = dao.findById(id);
+        Optional<GiftCertificate> oldGiftCertificate = giftCertificateRepo.findById(id);
         if (oldGiftCertificate.isEmpty()) {
             throw new NoSuchEntityException(ExceptionMessageKey.NO_ENTITY);
         }
         String giftCertificateName = giftCertificateDto.getName();
-        boolean isGiftCertificateExist = giftCertificateDao.findByName(giftCertificateName).isPresent();
+        boolean isGiftCertificateExist = giftCertificateRepo.findByName(giftCertificateName).isPresent();
         if (isGiftCertificateExist && !oldGiftCertificate.get().getName().equals(giftCertificateName)) {
             throw new ExistingEntityException(ExceptionMessageKey.GIFT_CERTIFICATE_EXIST);
         }
@@ -107,7 +126,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
 
         giftCertificate.setTags(tagUpdater.updateListFromDatabase(giftCertificate.getTags()));
         GiftCertificate newGiftCertificate = giftCertificateUpdater.updateObject(giftCertificate, oldGiftCertificate.get());
-        return converter.convertToDto(giftCertificateDao.update(newGiftCertificate));
+        return converter.convertToDto(giftCertificateRepo.save(newGiftCertificate));
     }
 
     @Override
@@ -132,12 +151,17 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
         if (sortCreateDateType != null) {
             IdentifiableValidator.validateSortType(sortCreateDateType.toUpperCase(), exceptionResult);
         }
+
+        String partOfName = getSingleParameter(requestParams, PART_OF_NAME);
+        String partOfDescription = getSingleParameter(requestParams, PART_OF_DESCRIPTION);
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        PageRequest pageRequest = new PageRequest(page, size);
-        return giftCertificateDao.findWithFilters(requestParams, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return giftCertificateRepo.findGiftCertificatesWithParams(name, partOfName,
+                partOfDescription, tagNames, sortCreateDateType,
+                sortNameType, pageRequest).stream().map(converter::convertToDto).toList();
     }
 
     private String getSingleParameter(MultiValueMap<String, String> fields, String parameter) {

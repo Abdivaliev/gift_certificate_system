@@ -1,42 +1,61 @@
 package com.epam.esm.service.impl;
 
-import com.epam.esm.dao.CRDDao;
-import com.epam.esm.dao.TagDao;
 import com.epam.esm.dto.MostUsedTagDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.*;
-import com.epam.esm.service.AbstractService;
+import com.epam.esm.repo.TagRepo;
+import com.epam.esm.repo.UserRepo;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.validator.IdentifiableValidator;
 import com.epam.esm.service.validator.TagValidator;
 import jakarta.persistence.Tuple;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import static com.epam.esm.exception.ExceptionMessageKey.TAG_NOT_FOUND;
+import java.util.stream.Collectors;
 
 @Service
-public class TagServiceImpl extends AbstractService<Tag, TagDto> implements TagService {
-    private final String PATH_TO_LOG_FILE = "core/src/main/resources/logs/logfile.log";
-    private final TagDao tagDao;
-    private final CRDDao<User> userDao;
+public class TagServiceImpl implements TagService {
+    private final TagRepo tagRepo;
+    private final UserRepo userRepo;
+    private final Converter<Tag, TagDto> tagConvertor;
     private final Converter<Tuple, MostUsedTagDto> mostUsedTagDtoConverter;
 
-    public TagServiceImpl(Converter<Tag, TagDto> converter, TagDao tagDao, CRDDao<User> userDao, Converter<Tuple, MostUsedTagDto> mostUsedTagDtoConverter) {
-        super(tagDao, converter);
-        this.tagDao = tagDao;
-        this.userDao = userDao;
+    public TagServiceImpl(TagRepo tagRepo, UserRepo userRepo, Converter<Tag, TagDto> tagConvertor, Converter<Tuple, MostUsedTagDto> mostUsedTagDtoConverter) {
+        this.tagRepo = tagRepo;
+        this.userRepo = userRepo;
+        this.tagConvertor = tagConvertor;
         this.mostUsedTagDtoConverter = mostUsedTagDtoConverter;
     }
 
+
+    @Override
+    public TagDto findById(long id) {
+        ExceptionResult exceptionResult = new ExceptionResult();
+        IdentifiableValidator.validateId(id, exceptionResult);
+        if (!exceptionResult.getExceptionMessages().isEmpty()) {
+            throw new IncorrectParameterException(exceptionResult);
+        }
+        Optional<Tag> optionalEntity = tagRepo.findById(id);
+        if (optionalEntity.isEmpty()) {
+            throw new NoSuchEntityException(ExceptionMessageKey.NO_ENTITY);
+        }
+
+        return tagConvertor.convertToDto(optionalEntity.get());
+    }
+
+    @Override
+    public List<TagDto> findAll(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return tagRepo.findAll(pageRequest).stream().map(tagConvertor::convertToDto).collect(Collectors.toList());
+    }
 
     @Override
     @Transactional
@@ -49,15 +68,15 @@ public class TagServiceImpl extends AbstractService<Tag, TagDto> implements TagS
         }
 
         String tagName = tagDto.getName();
-        boolean isTagExist = tagDao.findByName(tagName).isPresent();
+        boolean isTagExist = tagRepo.findByName(tagName).isPresent();
         if (isTagExist) {
             throw new ExistingEntityException(ExceptionMessageKey.TAG_EXIST);
         }
 
 
-        Tag tag = converter.convertToEntity(tagDto);
-        Tag savedTag = tagDao.save(tag);
-        return converter.convertToDto(savedTag);
+        Tag tag = tagConvertor.convertToEntity(tagDto);
+        Tag savedTag = tagRepo.save(tag);
+        return tagConvertor.convertToDto(savedTag);
     }
 
     @Override
@@ -69,46 +88,32 @@ public class TagServiceImpl extends AbstractService<Tag, TagDto> implements TagS
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        Optional<Tag> foundEntity = tagDao.findById(id);
+        Optional<Tag> foundEntity = tagRepo.findById(id);
         if (foundEntity.isEmpty()) {
             throw new NoSuchEntityException(ExceptionMessageKey.NO_ENTITY);
         }
-        tagDao.deleteById(id);
+        tagRepo.deleteById(id);
     }
 
 
     @Override
     public List<MostUsedTagDto> findMostUsedTagByUserId(Long userId) {
 
-        Optional<User> optionalEntity = userDao.findById(userId);
+        Optional<User> optionalEntity = userRepo.findById(userId);
         if (optionalEntity.isEmpty()) {
             throw new NoSuchEntityException(ExceptionMessageKey.NO_ENTITY);
         }
 
-        Map<List<?>, List<?>> results = tagDao.findMostUsedTagByUserId(userId);
-        List<MostUsedTagDto> response = new ArrayList<>();
+        List<Tuple> tags = tagRepo.findMostUsedTagByUserId(userId);
+        List<Tuple> explanation = tagRepo.findMostUsedTagByUserIdExplanation(userId);
 
-        for (Map.Entry<List<?>, List<?>> result : results.entrySet()) {
-            List<?> resultList = result.getKey();
-            List<Tuple> tuples = getTuplesFromResultList(resultList);
-            response.addAll(tuples.stream().map(mostUsedTagDtoConverter::convertToDto).toList());
 
-            List<?> explanation = result.getValue();
-            explanation.forEach(System.out::println);
-        }
+
+
+        List<MostUsedTagDto> response = new ArrayList<>(tags.stream().map(mostUsedTagDtoConverter::convertToDto).toList());
+        explanation.forEach(System.out::println);
 
         return response;
-    }
-
-    private List<Tuple> getTuplesFromResultList(List<?> resultList) {
-        if (resultList.isEmpty()) {
-            throw new NoSuchEntityException(TAG_NOT_FOUND);
-        }
-
-        return resultList.stream()
-                .filter(item -> item instanceof Tuple)
-                .map(item -> (Tuple) item)
-                .toList();
     }
 
 
