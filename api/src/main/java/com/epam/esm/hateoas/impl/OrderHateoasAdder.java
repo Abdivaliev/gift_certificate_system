@@ -14,9 +14,8 @@ public class OrderHateoasAdder implements HateoasAdder<OrderDto> {
     private static final Class<OrderController> CONTROLLER = OrderController.class;
 
     @Override
-    public OrderDto addLinks(OrderDto orderDto) {
-            orderDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).findById(orderDto.getId())).withSelfRel());
-            orderDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).save(orderDto)).withRel("save"));
-        return orderDto;
+    public void addLinks(OrderDto orderDto) {
+        orderDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).findById(orderDto.getId())).withSelfRel());
+        orderDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).save(orderDto)).withRel("save"));
     }
 }

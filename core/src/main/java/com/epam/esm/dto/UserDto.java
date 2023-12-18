@@ -18,8 +18,10 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     private long id;
     private String name;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime createDate;
+    private LocalDateTime createdDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedDate;
 }

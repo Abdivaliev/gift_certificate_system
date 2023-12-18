@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.dto.MostUsedTagDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.hateoas.HateoasAdder;
 import com.epam.esm.service.TagService;
@@ -40,27 +41,28 @@ public class TagController {
     @ResponseStatus(HttpStatus.OK)
     public TagDto findById(@PathVariable("id") long id) {
         TagDto tagDto = tagService.findById(id);
-        return hateoasAdder.addLinks(tagDto);
+        hateoasAdder.addLinks(tagDto);
+        return tagDto;
     }
 
-    @GetMapping(path = "/most-used", consumes = "application/json", produces = "application/json")
+    @GetMapping(path = "/users/most-used-tag/{userId}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<TagDto> findMostUsedTag() {
-        List<TagDto> tagDtoList = tagService.findMostUsedTag();
-        return tagDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());
+    public List<MostUsedTagDto> findMostUsedTagByUser(@PathVariable("userId") long userId){
+        return tagService.findMostUsedTagByUserId(userId);
     }
 
     @DeleteMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<?> delete(@PathVariable("id") long id) {
         tagService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Success");
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public TagDto save(@RequestBody TagDto tagDto) {
         TagDto savedDTO = tagService.save(tagDto);
-        return hateoasAdder.addLinks(savedDTO);
+        hateoasAdder.addLinks(savedDTO);
+        return tagDto;
     }
 
 }

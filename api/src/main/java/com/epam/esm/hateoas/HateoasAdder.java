@@ -3,5 +3,5 @@ package com.epam.esm.hateoas;
 import org.springframework.hateoas.RepresentationModel;
 
 public interface HateoasAdder<T extends RepresentationModel<T>> {
-    T addLinks(T entity);
+    void addLinks(T entity);
 }

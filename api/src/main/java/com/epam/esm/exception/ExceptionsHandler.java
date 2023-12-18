@@ -21,8 +21,8 @@ import static org.springframework.http.HttpStatus.*;
 @RestControllerAdvice
 public class ExceptionsHandler {
 
-    @ExceptionHandler(DuplicateEntityException.class)
-    public final ResponseEntity<Object> handleDuplicateEntityExceptions(DuplicateEntityException ex) {
+    @ExceptionHandler(ExistingEntityException.class)
+    public final ResponseEntity<Object> handleDuplicateEntityExceptions(ExistingEntityException ex) {
         String details = Translator.toLocale(ex.getLocalizedMessage());
         ErrorResponse errorResponse = new ErrorResponse(CONFLICT_EXCEPTION.toString(), details);
         return new ResponseEntity<>(errorResponse, CONFLICT);

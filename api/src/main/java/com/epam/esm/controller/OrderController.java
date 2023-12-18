@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v2/orders")
-public class OrderController {
+public class    OrderController {
     private final OrderService orderService;
     private final HateoasAdder<OrderDto> hateoasAdder;
 
@@ -25,7 +25,8 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public OrderDto findById(@PathVariable("id") long id) {
         OrderDto orderDto = orderService.findById(id);
-        return hateoasAdder.addLinks(orderDto);
+        hateoasAdder.addLinks(orderDto);
+        return orderDto;
     }
 
     @GetMapping(path = "/users/{userId}", consumes = "application/json", produces = "application/json")
@@ -57,6 +58,7 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto save(@RequestBody OrderDto orderDto) {
         OrderDto savedOrderDTo = orderService.save(orderDto);
-        return hateoasAdder.addLinks(savedOrderDTo);
+        hateoasAdder.addLinks(savedOrderDTo);
+        return orderDto;
     }
 }

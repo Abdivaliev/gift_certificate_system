@@ -23,11 +23,11 @@ public class OrderDaoImpl extends AbstractDao<Order> implements OrderDao {
 
 
     @Override
-    public List<Order> findAllByUserId(long userId, PageRequest pageableDTo) {
+    public List<Order> findAllByUserId(long userId, PageRequest pageRequest) {
         return entityManager.createQuery(FIND_ALL_BY_USER_ID_QUERY, entityType)
                 .setParameter("user_id", userId)
-                .setFirstResult((int) pageableDTo.getOffset())
-                .setMaxResults(pageableDTo.getPageSize())
+                .setFirstResult(pageRequest.getOffset())
+                .setMaxResults(pageRequest.getPageSize())
                 .getResultList();
     }
 

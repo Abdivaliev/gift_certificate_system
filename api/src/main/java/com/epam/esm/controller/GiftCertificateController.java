@@ -39,7 +39,8 @@ public class GiftCertificateController {
     @ResponseStatus(HttpStatus.OK)
     public GiftCertificateDto findById(@PathVariable("id") long id) {
         GiftCertificateDto giftCertificateDto = giftCertificateService.findById(id);
-        return hateoasAdder.addLinks(giftCertificateDto);
+        hateoasAdder.addLinks(giftCertificateDto);
+        return giftCertificateDto;
     }
 
 
@@ -51,17 +52,19 @@ public class GiftCertificateController {
 
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public GiftCertificateDto save(@RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto savedDto = giftCertificateService.save(giftCertificateDto);
-        return hateoasAdder.addLinks(savedDto);
+        hateoasAdder.addLinks(savedDto);
+        return giftCertificateDto;
     }
 
     @PatchMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
     public GiftCertificateDto update(@PathVariable("id") long id, @RequestBody GiftCertificateDto giftCertificateDto) {
         GiftCertificateDto updatedDto = giftCertificateService.update(id, giftCertificateDto);
-        return hateoasAdder.addLinks(updatedDto);
+        hateoasAdder.addLinks(updatedDto);
+        return giftCertificateDto;
     }
 
     @GetMapping(path = "/filter", consumes = "application/json", produces = "application/json")

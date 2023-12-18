@@ -44,7 +44,7 @@ public class GiftCertificateConverter implements Converter<GiftCertificate, Gift
         giftCertificateDto.setDescription(entity.getDescription());
         giftCertificateDto.setPrice(entity.getPrice());
         giftCertificateDto.setDuration(entity.getDuration());
-        giftCertificateDto.setCreateDate(entity.getCreatedDate());
+        giftCertificateDto.setCreatedDate(entity.getCreatedDate());
         giftCertificateDto.setUpdatedDate(entity.getUpdatedDate());
 
         giftCertificateDto.setTags(

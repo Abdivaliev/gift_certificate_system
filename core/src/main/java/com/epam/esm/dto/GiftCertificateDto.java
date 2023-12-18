@@ -22,12 +22,11 @@ public class GiftCertificateDto extends RepresentationModel<GiftCertificateDto> 
     private String description;
     private BigDecimal price;
     private int duration;
+    private Set<TagDto> tags;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime createDate;
+    private LocalDateTime createdDate;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedDate;
-
-    private Set<TagDto> tags;
 }

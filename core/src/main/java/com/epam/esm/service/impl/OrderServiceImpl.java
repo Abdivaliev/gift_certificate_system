@@ -35,8 +35,8 @@ public class OrderServiceImpl extends AbstractService<Order,OrderDto> implements
     private final GiftCertificateDao giftCertificateDao;
 
     @Autowired
-    public OrderServiceImpl(CRDDao<Order> dao, Converter<Order, OrderDto> converter, OrderDao orderDao, CRDDao<User> userDao, GiftCertificateDao giftCertificateDao) {
-        super(dao, converter);
+    public OrderServiceImpl( Converter<Order, OrderDto> converter, OrderDao orderDao, CRDDao<User> userDao, GiftCertificateDao giftCertificateDao) {
+        super(orderDao, converter);
         this.orderDao = orderDao;
         this.userDao = userDao;
         this.giftCertificateDao = giftCertificateDao;

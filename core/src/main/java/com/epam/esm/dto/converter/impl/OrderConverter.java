@@ -7,8 +7,6 @@ import com.epam.esm.entity.Order;
 import com.epam.esm.entity.User;
 import org.springframework.stereotype.Component;
 
-import static java.time.LocalDateTime.now;
-
 
 @Component
 public class OrderConverter implements Converter<Order, OrderDto> {
@@ -17,7 +15,7 @@ public class OrderConverter implements Converter<Order, OrderDto> {
     public Order convertToEntity(OrderDto dto) {
         Order order = new Order();
 
-        order.setPurchaseCost(dto.getPrice());
+        order.setPurchaseCost(dto.getPurchaseCost());
 
 
         User user = new User();
@@ -36,8 +34,8 @@ public class OrderConverter implements Converter<Order, OrderDto> {
         OrderDto orderDto = new OrderDto();
 
         orderDto.setId(entity.getId());
-        orderDto.setPrice(entity.getPurchaseCost());
-        orderDto.setCreateDate(entity.getCreatedDate());
+        orderDto.setPurchaseCost(entity.getPurchaseCost());
+        orderDto.setCreatedDate(entity.getCreatedDate());
         orderDto.setUpdatedDate(entity.getUpdatedDate());
         orderDto.setUserId(entity.getUser().getId());
         orderDto.setGiftCertificateId(entity.getGiftCertificate().getId());

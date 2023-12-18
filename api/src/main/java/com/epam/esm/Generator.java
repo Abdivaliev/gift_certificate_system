@@ -116,7 +116,7 @@ public class Generator {
             orderDto.setUserId(userDtoCRDService.findById(randomUser).getId());
             GiftCertificateDto certificateDto = giftCertificateCRDService.findById(randomGift);
             orderDto.setGiftCertificateId(certificateDto.getId());
-            orderDto.setPrice(certificateDto.getPrice());
+            orderDto.setPurchaseCost(certificateDto.getPrice());
             orderService.save(orderDto);
         }
     }

@@ -19,18 +19,16 @@ public class GiftCertificateHateoasAdder implements HateoasAdder<GiftCertificate
     private static final Class<TagController> TAG_CONTROLLER = TagController.class;
 
     @Override
-    public GiftCertificateDto addLinks(GiftCertificateDto giftCertificateDto) {
-            giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
-                    .findById(giftCertificateDto.getId())).withSelfRel());
-            giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
-                    .update(giftCertificateDto.getId(), giftCertificateDto)).withRel("update"));
-            giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
-                    .delete(giftCertificateDto.getId())).withRel("delete"));
-            giftCertificateDto.add(linkTo(methodOn(CONTROLLER).save(giftCertificateDto)).withRel("save"));
-            giftCertificateDto.getTags().forEach(
-                    tagDto -> tagDto.add(linkTo(methodOn(TAG_CONTROLLER).findById(tagDto.getId())).withSelfRel()));
-
-        return giftCertificateDto;
+    public void addLinks(GiftCertificateDto giftCertificateDto) {
+        giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
+                .findById(giftCertificateDto.getId())).withSelfRel());
+        giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
+                .update(giftCertificateDto.getId(), giftCertificateDto)).withRel("update"));
+        giftCertificateDto.add(linkTo(methodOn(CONTROLLER)
+                .delete(giftCertificateDto.getId())).withRel("delete"));
+        giftCertificateDto.add(linkTo(methodOn(CONTROLLER).save(giftCertificateDto)).withRel("save"));
+        giftCertificateDto.getTags().forEach(
+                tagDto -> tagDto.add(linkTo(methodOn(TAG_CONTROLLER).findById(tagDto.getId())).withSelfRel()));
     }
 }
 

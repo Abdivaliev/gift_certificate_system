@@ -14,10 +14,9 @@ public class TagHateoasAdder implements HateoasAdder<TagDto> {
     private static final Class<TagController> CONTROLLER = TagController.class;
 
     @Override
-    public TagDto addLinks(TagDto tagDto) {
-            tagDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).findById(tagDto.getId())).withSelfRel());
-            tagDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).delete(tagDto.getId())).withRel("delete"));
-            tagDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).save(tagDto)).withRel("save"));
-        return tagDto;
+    public void addLinks(TagDto tagDto) {
+        tagDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).findById(tagDto.getId())).withSelfRel());
+        tagDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).delete(tagDto.getId())).withRel("delete"));
+        tagDto.add(linkTo(WebMvcLinkBuilder.methodOn(CONTROLLER).save(tagDto)).withRel("save"));
     }
 }
