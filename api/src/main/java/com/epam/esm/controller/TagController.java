@@ -5,10 +5,9 @@ import com.epam.esm.dto.TagDto;
 import com.epam.esm.hateoas.HateoasAdder;
 import com.epam.esm.service.TagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,8 +28,8 @@ public class TagController {
 
     @GetMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    @Secured({"Role.USER","Role.ADMIN"})
-    public List<TagDto> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
+    public List<TagDto> findAll(@RequestParam(value = "page", defaultValue = "0", required = false) int page,
                                 @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
         List<TagDto> tagDtoList = tagService.findAll(page, size);
         return tagDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());
@@ -38,7 +37,7 @@ public class TagController {
 
     @GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    @Secured({"Role.USER","Role.ADMIN"})
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public TagDto findById(@PathVariable("id") long id) {
         TagDto tagDto = tagService.findById(id);
         hateoasAdder.addLinks(tagDto);
@@ -47,13 +46,13 @@ public class TagController {
 
     @GetMapping(path = "/users/most-used-tag/{userId}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    @Secured({"Role.USER","Role.ADMIN"})
+    @PreAuthorize("hasAnyAuthority('USER','ADMIN')")
     public List<MostUsedTagDto> findMostUsedTagByUser(@PathVariable("userId") long userId){
         return tagService.findMostUsedTagByUserId(userId);
     }
 
     @DeleteMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
-    @Secured({"Role.ADMIN"})
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> delete(@PathVariable("id") long id) {
         tagService.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Success");
@@ -61,11 +60,11 @@ public class TagController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
-    @Secured({"Role.ADMIN"})
+    @PreAuthorize("hasAuthority('ADMIN')")
     public TagDto save(@RequestBody TagDto tagDto) {
         TagDto savedDTO = tagService.save(tagDto);
         hateoasAdder.addLinks(savedDTO);
-        return tagDto;
+        return savedDTO;
     }
 
 }

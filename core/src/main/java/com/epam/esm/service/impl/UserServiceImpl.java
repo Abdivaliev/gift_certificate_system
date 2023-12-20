@@ -66,8 +66,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
         userRepo.save(user);
-        String token = jwtService.generateToken(user);
-        return new AuthResponseDto(token);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        return new AuthResponseDto(accessToken, refreshToken);
     }
 
     @Override
@@ -78,8 +79,9 @@ public class UserServiceImpl implements UserService {
                 ));
 
         User user = userRepo.findByUsername(request.getUsername()).orElseThrow();
-        String token = jwtService.generateToken(user);
-        return new AuthResponseDto(token);
+        String accessToken = jwtService.generateAccessToken(user);
+        String refreshToken = jwtService.generateRefreshToken(user);
+        return new AuthResponseDto(accessToken, refreshToken);
     }
 
     @Override
