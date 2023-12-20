@@ -6,16 +6,19 @@ import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
 import com.epam.esm.exception.*;
 import com.epam.esm.repo.GiftCertificateRepo;
+import com.epam.esm.repo.TagRepo;
 import com.epam.esm.service.GiftCertificateService;
 import com.epam.esm.service.updater.Updater;
 import com.epam.esm.service.validator.GiftCertificateValidator;
 import com.epam.esm.service.validator.IdentifiableValidator;
 import com.epam.esm.service.validator.TagValidator;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,12 +31,14 @@ import static com.epam.esm.constant.FilterParameters.*;
 @Service
 public class GiftCertificateServiceImpl implements GiftCertificateService {
     private final GiftCertificateRepo giftCertificateRepo;
+    private final TagRepo tagRepo;
     private final Converter<GiftCertificate, GiftCertificateDto> converter;
     private final Updater<GiftCertificate> giftCertificateUpdater;
     private final Updater<Tag> tagUpdater;
 
-    public GiftCertificateServiceImpl(GiftCertificateRepo giftCertificateRepo, Converter<GiftCertificate, GiftCertificateDto> converter, Updater<GiftCertificate> giftCertificateUpdater, Updater<Tag> tagUpdater) {
+    public GiftCertificateServiceImpl(GiftCertificateRepo giftCertificateRepo, TagRepo tagRepo, Converter<GiftCertificate, GiftCertificateDto> converter, Updater<GiftCertificate> giftCertificateUpdater, Updater<Tag> tagUpdater) {
         this.giftCertificateRepo = giftCertificateRepo;
+        this.tagRepo = tagRepo;
         this.converter = converter;
         this.giftCertificateUpdater = giftCertificateUpdater;
         this.tagUpdater = tagUpdater;
@@ -138,9 +143,11 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
             GiftCertificateValidator.validateName(name, exceptionResult);
         }
         List<String> tagNames = requestParams.get(TAG_NAME);
+        Set<Tag> tags=new HashSet<>();
         if (tagNames != null) {
             for (String tagName : tagNames) {
                 TagValidator.validateName(tagName, exceptionResult);
+                tagRepo.findByName(tagName).ifPresent(tags::add);
             }
         }
         String sortNameType = getSingleParameter(requestParams, SORT_BY_NAME);
@@ -151,17 +158,19 @@ public class GiftCertificateServiceImpl implements GiftCertificateService {
         if (sortCreateDateType != null) {
             IdentifiableValidator.validateSortType(sortCreateDateType.toUpperCase(), exceptionResult);
         }
-
-        String partOfName = getSingleParameter(requestParams, PART_OF_NAME);
-        String partOfDescription = getSingleParameter(requestParams, PART_OF_DESCRIPTION);
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
             throw new IncorrectParameterException(exceptionResult);
         }
 
+        String partOfName = getSingleParameter(requestParams, PART_OF_NAME);
+        String partOfDescription = getSingleParameter(requestParams, PART_OF_DESCRIPTION);
+
+//Sort sort=Sort.by(
+//        Sort.Order.a
+//)
         PageRequest pageRequest = PageRequest.of(page, size);
-        return giftCertificateRepo.findGiftCertificatesWithParams(name, partOfName,
-                partOfDescription, tagNames, sortCreateDateType,
-                sortNameType, pageRequest).stream().map(converter::convertToDto).toList();
+//        giftCertificateRepo.findAllByNameAndNameContainingAndDescriptionContainingAndTagsContains(name,partOfName,partOfDescription,tags,pageRequest);
+        return null;
     }
 
     private String getSingleParameter(MultiValueMap<String, String> fields, String parameter) {

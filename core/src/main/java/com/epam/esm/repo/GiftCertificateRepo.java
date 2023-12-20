@@ -1,17 +1,17 @@
 package com.epam.esm.repo;
 
-import com.epam.esm.dto.PageRequest;
 import com.epam.esm.entity.GiftCertificate;
+import com.epam.esm.entity.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface GiftCertificateRepo extends JpaRepository<GiftCertificate, Long> {
@@ -27,7 +27,6 @@ public interface GiftCertificateRepo extends JpaRepository<GiftCertificate, Long
             "CASE WHEN :sortByCreateDate = 'DESC' THEN gc.createDate END DESC, " +
             "CASE WHEN :sortByName = 'ASC' THEN gc.name END ASC, " +
             "CASE WHEN :sortByName = 'DESC' THEN gc.name END DESC";
-    Optional<GiftCertificate> findByName(String name);
     @Query(value = query,nativeQuery = true)
     Page<GiftCertificate> findGiftCertificatesWithParams(@Param("name") String name,
                                                          @Param("partOfName") String partOfName,
@@ -35,4 +34,8 @@ public interface GiftCertificateRepo extends JpaRepository<GiftCertificate, Long
                                                          @Param("tagNames") List<String> tagNames,
                                                          @Param("sortByCreateDate") String sortByCreateDate,
                                                          @Param("sortByName") String sortByName, Pageable pageable);
+
+//    Page<GiftCertificate> findAllByNameAndNameContainingAndDescriptionContainingAndTagsContains(String name, String name2, String description, Set<Tag> tags, Pageable pageable);
+
+    Optional<GiftCertificate> findByName(String name);
 }

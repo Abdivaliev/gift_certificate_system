@@ -12,5 +12,4 @@ public class FilterParameters {
     public static final String SORT_BY_CREATE_DATE = "sortByCreateDate";
     public static final String ASC = "ASC";
     public static final String DESC = "DESC";
-    public static final String PERCENT = "%";
 }

@@ -13,6 +13,7 @@ public class UserConverter implements Converter<User, UserDto> {
         User user = new User();
 
         user.setName(dto.getName());
+        user.setUsername(dto.getUsername());
 
         return user;
     }
@@ -25,6 +26,7 @@ public class UserConverter implements Converter<User, UserDto> {
         userDto.setName(entity.getName());
         userDto.setCreatedDate(entity.getCreatedDate());
         userDto.setUpdatedDate(entity.getUpdatedDate());
+        userDto.setUsername(entity.getUsername());
 
         return userDto;
     }

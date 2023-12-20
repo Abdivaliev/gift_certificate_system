@@ -12,6 +12,7 @@ import com.epam.esm.service.TagService;
 import com.epam.esm.service.validator.IdentifiableValidator;
 import com.epam.esm.service.validator.TagValidator;
 import jakarta.persistence.Tuple;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,18 +23,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagRepo tagRepo;
     private final UserRepo userRepo;
     private final Converter<Tag, TagDto> tagConvertor;
     private final Converter<Tuple, MostUsedTagDto> mostUsedTagDtoConverter;
-
-    public TagServiceImpl(TagRepo tagRepo, UserRepo userRepo, Converter<Tag, TagDto> tagConvertor, Converter<Tuple, MostUsedTagDto> mostUsedTagDtoConverter) {
-        this.tagRepo = tagRepo;
-        this.userRepo = userRepo;
-        this.tagConvertor = tagConvertor;
-        this.mostUsedTagDtoConverter = mostUsedTagDtoConverter;
-    }
 
 
     @Override
@@ -106,8 +101,6 @@ public class TagServiceImpl implements TagService {
 
         List<Tuple> tags = tagRepo.findMostUsedTagByUserId(userId);
         List<Tuple> explanation = tagRepo.findMostUsedTagByUserIdExplanation(userId);
-
-
 
 
         List<MostUsedTagDto> response = new ArrayList<>(tags.stream().map(mostUsedTagDtoConverter::convertToDto).toList());

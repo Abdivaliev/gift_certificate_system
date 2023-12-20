@@ -14,13 +14,11 @@ public abstract class BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "crated_date",updatable = false)
+    @Column(name = "crated_date", updatable = false, nullable = false)
     private LocalDateTime createdDate;
 
     @Column(name = "updated_date")
     private LocalDateTime updatedDate;
-
-
 
 
     @PrePersist

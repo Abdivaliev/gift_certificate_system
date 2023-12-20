@@ -3,7 +3,9 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.hateoas.HateoasAdder;
 import com.epam.esm.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,18 +13,16 @@ import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("/api/v2/orders")
-public class    OrderController {
+@RequiredArgsConstructor
+@RequestMapping("/api/v3/orders")
+public class OrderController {
     private final OrderService orderService;
     private final HateoasAdder<OrderDto> hateoasAdder;
 
-    public OrderController(OrderService orderService, HateoasAdder<OrderDto> hateoasAdder) {
-        this.orderService = orderService;
-        this.hateoasAdder = hateoasAdder;
-    }
 
     @GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
+    @Secured({"Role.USER","Role.ADMIN"})
     public OrderDto findById(@PathVariable("id") long id) {
         OrderDto orderDto = orderService.findById(id);
         hateoasAdder.addLinks(orderDto);
@@ -31,6 +31,7 @@ public class    OrderController {
 
     @GetMapping(path = "/users/{userId}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
+    @Secured({"Role.USER","Role.ADMIN"})
     public List<OrderDto> findAllByUserId(@PathVariable long userId,
                                           @RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                           @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
@@ -44,6 +45,7 @@ public class    OrderController {
 
     @GetMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
+    @Secured({"Role.USER","Role.ADMIN"})
     public List<OrderDto> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                   @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
 
@@ -56,6 +58,7 @@ public class    OrderController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
+    @Secured({"Role.ADMIN"})
     public OrderDto save(@RequestBody OrderDto orderDto) {
         OrderDto savedOrderDTo = orderService.save(orderDto);
         hateoasAdder.addLinks(savedOrderDTo);

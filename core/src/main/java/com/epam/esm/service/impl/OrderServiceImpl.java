@@ -13,6 +13,7 @@ import com.epam.esm.repo.OrderRepo;
 import com.epam.esm.repo.UserRepo;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.validator.OrderValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import static com.epam.esm.exception.ExceptionMessageKey.USER_NOT_FOUND;
 
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepo orderRepo;
@@ -34,13 +36,6 @@ public class OrderServiceImpl implements OrderService {
     private final Converter<Order, OrderDto> orderConverter;
     private final GiftCertificateRepo giftCertificateRepo;
 
-    @Autowired
-    public OrderServiceImpl(OrderRepo orderRepo, UserRepo userRepo, Converter<Order, OrderDto> orderConverter, GiftCertificateRepo giftCertificateRepo) {
-        this.orderRepo = orderRepo;
-        this.userRepo = userRepo;
-        this.orderConverter = orderConverter;
-        this.giftCertificateRepo = giftCertificateRepo;
-    }
 
     @Override
     public OrderDto findById(long id) {
