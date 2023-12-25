@@ -3,20 +3,22 @@ package com.epam.esm.dto;
 import com.epam.esm.exception.ExceptionMessageKey;
 import com.epam.esm.exception.ExceptionResult;
 import com.epam.esm.exception.IncorrectParameterException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class PageRequest {
-    private final int offset;
-    private final int pageSize;
+    private int offset;
+    private int pageSize;
 
-    public PageRequest(int page, int size) {
+    public static PageRequest of(int page, int size) {
         if (page < 1 || size < 0) {
             ExceptionResult exceptionResult = new ExceptionResult();
-            exceptionResult.addException(ExceptionMessageKey.INVALID_PAGINATION, page,size);
+            exceptionResult.addException(ExceptionMessageKey.INVALID_PAGINATION, page, size);
             throw new IncorrectParameterException(exceptionResult);
         }
-        this.offset = (page - 1) * size;
-        this.pageSize = size;
+        int offset = (page - 1) * size;
+        return new PageRequest(offset, size);
     }
 }

@@ -32,6 +32,4 @@ public class GiftCertificate extends BaseEntity {
             joinColumns = @JoinColumn(name = "gift_certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
-
-
 }

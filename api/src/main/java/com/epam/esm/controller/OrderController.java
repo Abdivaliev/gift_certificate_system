@@ -3,23 +3,20 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.hateoas.HateoasAdder;
 import com.epam.esm.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v2/orders")
-public class    OrderController {
+public class OrderController {
     private final OrderService orderService;
     private final HateoasAdder<OrderDto> hateoasAdder;
 
-    public OrderController(OrderService orderService, HateoasAdder<OrderDto> hateoasAdder) {
-        this.orderService = orderService;
-        this.hateoasAdder = hateoasAdder;
-    }
 
     @GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
@@ -36,10 +33,8 @@ public class    OrderController {
                                           @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
 
         List<OrderDto> orderDtoList = orderService.findAllByUserId(userId, page, size);
-
-        return orderDtoList.stream()
-                .peek(hateoasAdder::addLinks)
-                .collect(Collectors.toList());
+        orderDtoList.forEach(orderDto -> hateoasAdder.addLinks(orderDto, page, size));
+        return orderDtoList;
     }
 
     @GetMapping(consumes = "application/json", produces = "application/json")
@@ -48,10 +43,8 @@ public class    OrderController {
                                   @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
 
         List<OrderDto> orderDtoList = orderService.findAll(page, size);
-
-        return orderDtoList.stream()
-                .peek(hateoasAdder::addLinks)
-                .collect(Collectors.toList());
+        orderDtoList.forEach(orderDto -> hateoasAdder.addLinks(orderDto, page, size));
+        return orderDtoList;
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
@@ -59,6 +52,6 @@ public class    OrderController {
     public OrderDto save(@RequestBody OrderDto orderDto) {
         OrderDto savedOrderDTo = orderService.save(orderDto);
         hateoasAdder.addLinks(savedOrderDTo);
-        return orderDto;
+        return savedOrderDTo;
     }
 }

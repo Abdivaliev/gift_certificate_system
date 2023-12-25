@@ -15,9 +15,6 @@ public class OrderConverter implements Converter<Order, OrderDto> {
     public Order convertToEntity(OrderDto dto) {
         Order order = new Order();
 
-        order.setPurchaseCost(dto.getPurchaseCost());
-
-
         User user = new User();
         user.setId(dto.getUserId());
         order.setUser(user);

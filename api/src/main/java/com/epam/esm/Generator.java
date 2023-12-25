@@ -34,7 +34,7 @@ public class Generator implements CommandLineRunner {
 //        save1000Tags();
 //        save10000Gifts();
 //        save1000Users();
-//        save1000rders();
+//        save100Orders();
     }
 
     public void save1000Tags() {
@@ -111,7 +111,7 @@ public class Generator implements CommandLineRunner {
         }
     }
 
-    public void save1000rders() {
+    public void save100Orders() {
         for (int i = 0; i < 1000; i++) {
             int randomUser = new Random().nextInt(1000) + 1;
             int randomGift = new Random().nextInt(10000) + 1;
