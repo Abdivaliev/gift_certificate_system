@@ -42,7 +42,7 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
     @Override
     @Transactional(readOnly = true)
     public List<D> findAll(int page, int size) {
-        PageRequest pageRequest = new PageRequest(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size);
         return dao.findAll(pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
     }
 

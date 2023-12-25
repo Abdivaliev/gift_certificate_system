@@ -13,20 +13,20 @@ public class OrderValidator {
 
 
     public void validate(OrderDto orderDto, ExceptionResult er) {
-//        IdentifiableValidator.validateExistenceOfId(orderDto.getId(), er);
-//        validateUserId(orderDto.getUserId(), er);
-//        validateGiftCertificateId(orderDto.getGiftCertificateId(), er);
+        IdentifiableValidator.validateExistenceOfId(orderDto.getId(), er);
+        validateUserId(orderDto.getUserId(), er);
+        validateGiftCertificateId(orderDto.getGiftCertificateId(), er);
     }
 
     public void validateUserId(long userId, ExceptionResult er) {
-//        if (userId < MIN_ID) {
-//            er.addException(BAD_USER_ID, userId);
-//        }
+        if (userId < MIN_ID) {
+            er.addException(BAD_USER_ID, userId);
+        }
     }
 
     public void validateGiftCertificateId(long giftCertificateId, ExceptionResult er) {
-//        if (giftCertificateId < MIN_ID) {
-//            er.addException(BAD_GIFT_CERTIFICATE_ID, giftCertificateId);
-//        }
+        if (giftCertificateId < MIN_ID) {
+            er.addException(BAD_GIFT_CERTIFICATE_ID, giftCertificateId);
+        }
     }
 }

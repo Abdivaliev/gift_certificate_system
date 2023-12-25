@@ -1,10 +1,9 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.dto.MostUsedTagDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.hateoas.HateoasAdder;
 import com.epam.esm.service.TagService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,16 +16,11 @@ import java.util.stream.Collectors;
  * This class uses the TagService to process the requests.
  */
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v2/tags")
 public class TagController {
     private final TagService tagService;
     private final HateoasAdder<TagDto> hateoasAdder;
-
-    @Autowired
-    public TagController(TagService tagService, HateoasAdder<TagDto> hateoasAdder) {
-        this.tagService = tagService;
-        this.hateoasAdder = hateoasAdder;
-    }
 
 
     @GetMapping(consumes = "application/json", produces = "application/json")
@@ -34,7 +28,8 @@ public class TagController {
     public List<TagDto> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                 @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
         List<TagDto> tagDtoList = tagService.findAll(page, size);
-        return tagDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());
+        tagDtoList.forEach(tagDto -> hateoasAdder.addLinks(tagDto, page, size));
+        return tagDtoList;
     }
 
     @GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
@@ -45,10 +40,14 @@ public class TagController {
         return tagDto;
     }
 
-    @GetMapping(path = "/users/most-used-tag/{userId}", consumes = "application/json", produces = "application/json")
+    @GetMapping(path = "/users/tag/{userId}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<MostUsedTagDto> findMostUsedTagByUser(@PathVariable("userId") long userId){
-        return tagService.findMostUsedTagByUserId(userId);
+    public List<TagDto> findMostUsedTagListByUserId(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
+                                                    @RequestParam(value = "size", defaultValue = "5", required = false) int size,
+                                                    @PathVariable("userId") long userId) {
+        List<TagDto> tagList = tagService.findMostUsedTagListByUserId(userId, page, size);
+        tagList.forEach(tagDto -> hateoasAdder.addLinks(tagDto, page, size));
+        return tagList;
     }
 
     @DeleteMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
@@ -62,7 +61,7 @@ public class TagController {
     public TagDto save(@RequestBody TagDto tagDto) {
         TagDto savedDTO = tagService.save(tagDto);
         hateoasAdder.addLinks(savedDTO);
-        return tagDto;
+        return savedDTO;
     }
 
 }

@@ -3,7 +3,7 @@ package com.epam.esm.controller;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.hateoas.HateoasAdder;
 import com.epam.esm.service.CRDService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,18 +12,12 @@ import java.util.stream.Collectors;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v2/users")
 public class UserController {
     private final HateoasAdder<UserDto> hateoasAdder;
-
     private final CRDService<UserDto> userService;
 
-    @Autowired
-    public UserController(HateoasAdder<UserDto> hateoasAdder, CRDService<UserDto> userService) {
-        this.hateoasAdder = hateoasAdder;
-
-        this.userService = userService;
-    }
 
     @GetMapping(path = "/{id}", consumes = "application/json", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
@@ -38,6 +32,7 @@ public class UserController {
     public List<UserDto> findAll(@RequestParam(value = "page", defaultValue = "1", required = false) int page,
                                  @RequestParam(value = "size", defaultValue = "5", required = false) int size) {
         List<UserDto> userDtoList = userService.findAll(page, size);
-        return userDtoList.stream().peek(hateoasAdder::addLinks).collect(Collectors.toList());
+        userDtoList.forEach(userDto -> hateoasAdder.addLinks(userDto, page, size));
+        return userDtoList;
     }
 }

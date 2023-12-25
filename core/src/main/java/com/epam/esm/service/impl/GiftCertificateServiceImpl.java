@@ -136,8 +136,30 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        PageRequest pageRequest = new PageRequest(page, size);
+        PageRequest pageRequest = PageRequest.of(page, size);
         return giftCertificateDao.findWithFilters(requestParams, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<GiftCertificateDto> findByTagNames(Set<String> tagNames, int page, int size) {
+        if (tagNames == null || tagNames.isEmpty()) {
+            return findAll(page, size);
+        } else {
+
+            ExceptionResult exceptionResult = new ExceptionResult();
+
+            for (String tagName : tagNames) {
+                TagValidator.validateName(tagName, exceptionResult);
+            }
+
+            PageRequest pageRequest = PageRequest.of(page, size);
+
+            return giftCertificateDao.findByTagNames(tagNames, pageRequest)
+                    .stream()
+                    .map(converter::convertToDto)
+                    .toList();
+        }
     }
 
     private String getSingleParameter(MultiValueMap<String, String> fields, String parameter) {

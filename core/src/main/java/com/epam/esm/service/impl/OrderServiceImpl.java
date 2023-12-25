@@ -28,14 +28,14 @@ import static com.epam.esm.exception.ExceptionMessageKey.USER_NOT_FOUND;
 
 
 @Service
-public class OrderServiceImpl extends AbstractService<Order,OrderDto> implements OrderService {
+public class OrderServiceImpl extends AbstractService<Order, OrderDto> implements OrderService {
 
     private final OrderDao orderDao;
     private final CRDDao<User> userDao;
     private final GiftCertificateDao giftCertificateDao;
 
     @Autowired
-    public OrderServiceImpl( Converter<Order, OrderDto> converter, OrderDao orderDao, CRDDao<User> userDao, GiftCertificateDao giftCertificateDao) {
+    public OrderServiceImpl(Converter<Order, OrderDto> converter, OrderDao orderDao, CRDDao<User> userDao, GiftCertificateDao giftCertificateDao) {
         super(orderDao, converter);
         this.orderDao = orderDao;
         this.userDao = userDao;
@@ -51,8 +51,8 @@ public class OrderServiceImpl extends AbstractService<Order,OrderDto> implements
             throw new IncorrectParameterException(exceptionResult);
         }
 
-        Optional<User> optionalUser = userDao.findById(orderDto.getUserId());
-        if (optionalUser.isEmpty()) {
+        Optional<User> user = userDao.findById(orderDto.getUserId());
+        if (user.isEmpty()) {
             throw new NoSuchEntityException(USER_NOT_FOUND);
         }
 
@@ -63,7 +63,7 @@ public class OrderServiceImpl extends AbstractService<Order,OrderDto> implements
 
         Order order = converter.convertToEntity(orderDto);
 
-        order.setUser(optionalUser.get());
+        order.setUser(user.get());
         order.setGiftCertificate(optionalGiftCertificate.get());
 
         order.setPurchaseCost(optionalGiftCertificate.get().getPrice());
@@ -71,14 +71,15 @@ public class OrderServiceImpl extends AbstractService<Order,OrderDto> implements
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderDto> findAllByUserId(long userId, int page, int size) {
         ExceptionResult exceptionResult = new ExceptionResult();
         OrderValidator.validateUserId(userId, exceptionResult);
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
             throw new IncorrectParameterException(exceptionResult);
         }
-        PageRequest pageRequest = new PageRequest(page,size);
+        PageRequest pageRequest = PageRequest.of(page, size);
 
-         return orderDao.findAllByUserId(userId, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+        return orderDao.findAllByUserId(userId, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
     }
 }
