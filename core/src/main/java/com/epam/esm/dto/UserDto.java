@@ -1,5 +1,6 @@
 package com.epam.esm.dto;
 
+import com.epam.esm.entity.Role;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,9 @@ public class UserDto extends RepresentationModel<UserDto> {
 
     private long id;
     private String name;
+    private String username;
+    private String password;
+    private Role role;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdDate;

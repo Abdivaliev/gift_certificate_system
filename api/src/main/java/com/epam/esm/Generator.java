@@ -1,15 +1,22 @@
 package com.epam.esm;
 
+import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
+import com.epam.esm.entity.Role;
+import com.epam.esm.entity.User;
 import com.epam.esm.service.CRDService;
 import com.epam.esm.service.OrderService;
+import com.epam.esm.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -27,17 +34,34 @@ public class Generator implements CommandLineRunner {
     private final CRDService<TagDto> tagService;
     private final OrderService orderService;
     private final CRDService<GiftCertificateDto> giftCertificateCRDService;
-    private final CRDService<UserDto> userDtoCRDService;
+    private final UserService userService;
+
+    @Value(value = "${spring.jpa.hibernate.ddl-auto}")
+    private String ddl;
 
     @Override
-    public void run(String... args) throws Exception {
-//        save1000Tags();
-//        save10000Gifts();
-//        save1000Users();
-//        save100Orders();
+
+    public void run(String... args) {
+        if (ddl.equalsIgnoreCase("create") || ddl.equalsIgnoreCase("create-drop")) {
+            generateAdmin();
+            save1000Tags();
+            save10000Gifts();
+            save1000Users();
+            save100Orders();
+        }
     }
 
-    public void save1000Tags() {
+    private void generateAdmin() {
+        UserDto user = new UserDto();
+        user.setName("administrator");
+        user.setUsername("admin");
+        user.setPassword("admin");
+        user.setRole(Role.ADMIN);
+        userService.signUp(user);
+
+    }
+
+    private void save1000Tags() {
         Resource resource = resourceLoader.getResource("classpath:google-10000-english.txt");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
@@ -56,7 +80,7 @@ public class Generator implements CommandLineRunner {
         }
     }
 
-    public void save1000Users() {
+    private void save1000Users() {
         Resource resource = resourceLoader.getResource("classpath:google-10000-english.txt");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
@@ -68,7 +92,7 @@ public class Generator implements CommandLineRunner {
                     if (limit > 999) {
                         UserDto userDto = new UserDto();
                         userDto.setName(word);
-                        userDtoCRDService.save(userDto);
+                        userService.save(userDto);
                     }
                     limit++;
                 }
@@ -78,7 +102,7 @@ public class Generator implements CommandLineRunner {
         }
     }
 
-    public void save10000Gifts() {
+    private void save10000Gifts() {
         Resource resource = resourceLoader.getResource("classpath:google-10000-english.txt");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
@@ -111,12 +135,12 @@ public class Generator implements CommandLineRunner {
         }
     }
 
-    public void save100Orders() {
+    private void save100Orders() {
         for (int i = 0; i < 1000; i++) {
             int randomUser = new Random().nextInt(1000) + 1;
             int randomGift = new Random().nextInt(10000) + 1;
             OrderDto orderDto = new OrderDto();
-            orderDto.setUserId(userDtoCRDService.findById(randomUser).getId());
+            orderDto.setUserId(userService.findById(randomUser).getId());
             GiftCertificateDto certificateDto = giftCertificateCRDService.findById(randomGift);
             orderDto.setGiftCertificateId(certificateDto.getId());
             orderDto.setPurchaseCost(certificateDto.getPrice());

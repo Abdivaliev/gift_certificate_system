@@ -21,5 +21,9 @@ public class ExceptionMessageKey {
     public static final String BAD_USER_ID = "order.badUserID";
     public static final String BAD_GIFT_CERTIFICATE_ID = "order.badGiftCertificateID";
     public static final String USER_NOT_FOUND = "user.notFound";
+    public static final String USER_EXIST = "user.alreadyExist";
+    public static final String BAD_USER_NAME = "user.badName";
+    public static final String BAD_USERNAME = "user.badUsername";
+    public static final String BAD_USER_PASSWORD = "user.dadPassword";
     public static final String INVALID_PAGINATION = "pagination.invalid";
 }

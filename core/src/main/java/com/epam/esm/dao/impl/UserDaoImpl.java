@@ -1,20 +1,23 @@
 package com.epam.esm.dao.impl;
 
-import com.epam.esm.dao.CRDDao;
+import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.PageRequest;
 import com.epam.esm.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class UserDaoImpl implements CRDDao<User> {
+@Transactional
+public class UserDaoImpl implements UserDao {
     private static final String FIND_ALL_QUERY = "SELECT u FROM User u";
+    private static final String FIND_BY_USERNAME = "SELECT u FROM User u WHERE u.username=:username";
     private final SessionFactory sessionFactory;
 
     @Override
@@ -34,7 +37,19 @@ public class UserDaoImpl implements CRDDao<User> {
 
     @Override
     public User save(User user) {
-        throw new UnsupportedOperationException();
+        Session session = sessionFactory.getCurrentSession();
+        session.persist(user);
+        return user;
+    }
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery(FIND_BY_USERNAME, User.class)
+                .setParameter("username", username)
+                .getResultList()
+                .stream()
+                .findFirst();
     }
 
     @Override

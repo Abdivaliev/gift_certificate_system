@@ -1,6 +1,6 @@
 allprojects {
     group = 'com.epam'
-    version = '2.0'
+    version = '3.0'
 }
 
 subprojects {
@@ -22,6 +22,7 @@ subprojects {
 
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
 
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
