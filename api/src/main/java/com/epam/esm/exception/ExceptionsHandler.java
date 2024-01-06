@@ -1,9 +1,14 @@
 package com.epam.esm.exception;
 
 
+import com.epam.esm.dto.SecurityErrorResponse;
 import com.epam.esm.exception.language.Translator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,7 +17,6 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.Iterator;
 import java.util.Map;
-
 
 import static com.epam.esm.exception.ExceptionCodes.*;
 import static org.springframework.http.HttpStatus.*;
@@ -36,7 +40,7 @@ public class ExceptionsHandler {
     }
 
     @ExceptionHandler(IncorrectParameterException.class)
-    public final ResponseEntity<Object> handleIncorrectParameterExceptions(IncorrectParameterException ex) {
+    public final ResponseEntity<ErrorResponse> handleIncorrectParameterExceptions(IncorrectParameterException ex) {
         Iterator<Map.Entry<String, Object[]>> exceptions = ex.getExceptionResult().getExceptionMessages().entrySet().iterator();
         StringBuilder details = new StringBuilder();
         while (exceptions.hasNext()) {
@@ -75,5 +79,37 @@ public class ExceptionsHandler {
         String details = Translator.toLocale("exception.notSupported");
         ErrorResponse errorResponse = new ErrorResponse(METHOD_NOT_ALLOWED_EXCEPTION.toString(), details);
         return new ResponseEntity<>(errorResponse, METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public final ResponseEntity<Object> handleBadCredentialsException() {
+        String details = Translator.toLocale("exception.invalidAuthorization");
+        SecurityErrorResponse securityErrorResponse =
+                new SecurityErrorResponse(UNAUTHORIZED_EXCEPTION.getCode(), UNAUTHORIZED_EXCEPTION.getReason(), details);
+        return new ResponseEntity<>(securityErrorResponse, UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity<Object> handleAccessDeniedException() {
+        String details = Translator.toLocale("exception.noRights");
+        SecurityErrorResponse securityErrorResponse =
+                new SecurityErrorResponse(METHOD_NOT_ALLOWED_EXCEPTION.getCode(), METHOD_NOT_ALLOWED_EXCEPTION.getReason(), details);
+        return new ResponseEntity<>(securityErrorResponse, METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(SignatureException.class)
+    public final ResponseEntity<Object> handleSignatureException() {
+        String details = Translator.toLocale("exception.badInput");
+        SecurityErrorResponse securityErrorResponse =
+                new SecurityErrorResponse(BAD_REQUEST_EXCEPTION.getCode(), BAD_REQUEST_EXCEPTION.getReason(), details);
+        return new ResponseEntity<>(securityErrorResponse, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public final ResponseEntity<Object> handleExpiredJwtException() {
+        String details = Translator.toLocale("exception.expiredToken");
+        SecurityErrorResponse securityErrorResponse =
+                new SecurityErrorResponse(NOT_ACCEPTABLE.value(), NOT_ACCEPTABLE.name(), details);
+        return new ResponseEntity<>(securityErrorResponse, NOT_ACCEPTABLE);
     }
 }

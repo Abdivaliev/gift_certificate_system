@@ -12,13 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public abstract class AbstractService<E, D> implements CRDService<D> {
     protected final CRDDao<E> dao;
     protected final Converter<E, D> converter;
 
-    public AbstractService(CRDDao<E> dao, Converter<E, D> converter) {
+    protected AbstractService(CRDDao<E> dao, Converter<E, D> converter) {
         this.dao = dao;
         this.converter = converter;
     }
@@ -43,7 +42,7 @@ public abstract class AbstractService<E, D> implements CRDService<D> {
     @Transactional(readOnly = true)
     public List<D> findAll(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return dao.findAll(pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+        return dao.findAll(pageRequest).stream().map(converter::convertToDto).toList();
     }
 
     @Override

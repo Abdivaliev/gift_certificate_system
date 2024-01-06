@@ -9,10 +9,6 @@ import lombok.ToString;
 import java.math.BigDecimal;
 import java.util.Set;
 
-/**
- * Class representing a GiftCertificate entity.
- * This class has fields for id,name, description, price, duration, created date, updated date, and a list of tags.
- */
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data

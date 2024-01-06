@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.epam.esm.exception.ExceptionMessageKey.GIFT_CERTIFICATE_NOT_FOUND;
 import static com.epam.esm.exception.ExceptionMessageKey.USER_NOT_FOUND;
@@ -80,6 +79,6 @@ public class OrderServiceImpl extends AbstractService<Order, OrderDto> implement
         }
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        return orderDao.findAllByUserId(userId, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+        return orderDao.findAllByUserId(userId, pageRequest).stream().map(converter::convertToDto).toList();
     }
 }

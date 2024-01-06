@@ -1,12 +1,8 @@
 package com.epam.esm.service.validator;
 
 import com.epam.esm.dto.UserDto;
-import com.epam.esm.entity.User;
 import com.epam.esm.exception.ExceptionResult;
 import lombok.experimental.UtilityClass;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.epam.esm.exception.ExceptionMessageKey.*;
 
@@ -25,9 +21,9 @@ public class UserValidator {
     }
 
 
-    public void validateUsername(String email, ExceptionResult er) {
-        if (email == null) {
-            er.addException(BAD_USERNAME, email);
+    public void validateUsername(String username, ExceptionResult er) {
+        if (username == null) {
+            er.addException(BAD_USERNAME, username);
         }
     }
 

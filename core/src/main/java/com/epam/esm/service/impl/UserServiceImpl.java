@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +47,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> findAll(int page, int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        return userDao.findAll(pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+        return userDao.findAll(pageRequest).stream().map(converter::convertToDto).toList();
     }
 
     @Override

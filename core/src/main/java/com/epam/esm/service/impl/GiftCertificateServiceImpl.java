@@ -4,24 +4,23 @@ import com.epam.esm.dao.GiftCertificateDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.PageRequest;
 import com.epam.esm.dto.converter.Converter;
-import com.epam.esm.exception.*;
-import com.epam.esm.service.updater.Updater;
 import com.epam.esm.entity.GiftCertificate;
 import com.epam.esm.entity.Tag;
+import com.epam.esm.exception.*;
 import com.epam.esm.service.AbstractService;
 import com.epam.esm.service.GiftCertificateService;
+import com.epam.esm.service.updater.Updater;
 import com.epam.esm.service.validator.GiftCertificateValidator;
 import com.epam.esm.service.validator.IdentifiableValidator;
 import com.epam.esm.service.validator.TagValidator;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static com.epam.esm.constant.ColumnNames.NAME;
 import static com.epam.esm.constant.ColumnNames.TAG_NAME;
@@ -137,7 +136,7 @@ public class GiftCertificateServiceImpl extends AbstractService<GiftCertificate,
         }
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        return giftCertificateDao.findWithFilters(requestParams, pageRequest).stream().map(converter::convertToDto).collect(Collectors.toList());
+        return giftCertificateDao.findWithFilters(requestParams, pageRequest).stream().map(converter::convertToDto).toList();
     }
 
     @Override

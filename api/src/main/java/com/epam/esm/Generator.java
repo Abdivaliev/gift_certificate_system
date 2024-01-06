@@ -1,12 +1,10 @@
 package com.epam.esm;
 
-import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.GiftCertificateDto;
 import com.epam.esm.dto.OrderDto;
 import com.epam.esm.dto.TagDto;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.entity.Role;
-import com.epam.esm.entity.User;
 import com.epam.esm.service.CRDService;
 import com.epam.esm.service.OrderService;
 import com.epam.esm.service.UserService;
@@ -15,8 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -40,15 +36,15 @@ public class Generator implements CommandLineRunner {
     private String ddl;
 
     @Override
-
     public void run(String... args) {
         if (ddl.equalsIgnoreCase("create") || ddl.equalsIgnoreCase("create-drop")) {
             generateAdmin();
+            save1000Users();
             save1000Tags();
             save10000Gifts();
-            save1000Users();
             save100Orders();
         }
+
     }
 
     private void generateAdmin() {
@@ -58,7 +54,6 @@ public class Generator implements CommandLineRunner {
         user.setPassword("admin");
         user.setRole(Role.ADMIN);
         userService.signUp(user);
-
     }
 
     private void save1000Tags() {
@@ -92,7 +87,9 @@ public class Generator implements CommandLineRunner {
                     if (limit > 999) {
                         UserDto userDto = new UserDto();
                         userDto.setName(word);
-                        userService.save(userDto);
+                        userDto.setUsername(word);
+                        userDto.setPassword(word);
+                        userService.signUp(userDto);
                     }
                     limit++;
                 }
@@ -134,8 +131,8 @@ public class Generator implements CommandLineRunner {
             e.printStackTrace();
         }
     }
-
     private void save100Orders() {
+
         for (int i = 0; i < 1000; i++) {
             int randomUser = new Random().nextInt(1000) + 1;
             int randomGift = new Random().nextInt(10000) + 1;
