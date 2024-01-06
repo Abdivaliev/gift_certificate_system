@@ -8,14 +8,13 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
-
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static com.epam.esm.constant.ColumnNames.*;
-import static com.epam.esm.constant.ColumnNames.CREATE_DATE;
 import static com.epam.esm.constant.FilterParameters.*;
-import static com.epam.esm.constant.FilterParameters.ASC;
 
 
 @Component
@@ -43,7 +42,7 @@ public class QueryWriter{
         return Optional.ofNullable(fields.get(TAG_NAME))
                 .map(tagNames -> tagNames.stream()
                         .map(tagName -> criteriaBuilder.equal(giftCertificateRoot.join(TAGS).get(NAME), tagName))
-                        .collect(Collectors.toList()))
+                        .toList())
                 .orElse(new ArrayList<>());
     }
 

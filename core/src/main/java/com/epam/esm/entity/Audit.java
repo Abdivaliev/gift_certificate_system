@@ -16,10 +16,4 @@ public class Audit {
     private String entityType;
     private Long entityId;
     private String operation;
-    @ManyToOne
-    @JoinColumn(name = "created_by", nullable = false, updatable = false)
-    private User createdBy;
-    @ManyToOne
-    @JoinColumn(name = "updated_by")
-    private User updatedBy;
 }

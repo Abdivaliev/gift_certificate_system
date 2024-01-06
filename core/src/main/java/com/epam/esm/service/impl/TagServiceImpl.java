@@ -12,14 +12,11 @@ import com.epam.esm.service.AbstractService;
 import com.epam.esm.service.TagService;
 import com.epam.esm.service.validator.IdentifiableValidator;
 import com.epam.esm.service.validator.TagValidator;
-import jakarta.persistence.Tuple;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
-import static com.epam.esm.exception.ExceptionMessageKey.TAG_NOT_FOUND;
 
 @Service
 public class TagServiceImpl extends AbstractService<Tag, TagDto> implements TagService {

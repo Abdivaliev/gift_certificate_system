@@ -4,10 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
 
-/**
- * Class representing a Tag entity.
- * This class has id and name fields.
- */
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @Data

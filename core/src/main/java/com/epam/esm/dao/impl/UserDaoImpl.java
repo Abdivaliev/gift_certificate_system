@@ -18,6 +18,7 @@ import java.util.Optional;
 public class UserDaoImpl implements UserDao {
     private static final String FIND_ALL_QUERY = "SELECT u FROM User u";
     private static final String FIND_BY_USERNAME = "SELECT u FROM User u WHERE u.username=:username";
+
     private final SessionFactory sessionFactory;
 
     @Override

@@ -1,5 +1,6 @@
 package com.epam.esm.config;
 
+import com.epam.esm.exception.AuthenticationEntryPointHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,21 +18,33 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private static final String[] WHITE_LIST = {
+            "/api/v3/auth/signUp",
+            "/api/v3/auth/signIn",
+            "/api/v3/auth/refresh-token"
+    };
+
     private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationEntryPointHandler authenticationEntryPointHandler;
     private final JWTAuthFilter jwtAuthFilter;
+
 
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/api/v3/auth/signUp", "/api/v3/auth/signIn")
+                        req.requestMatchers(WHITE_LIST)
                                 .permitAll()
                                 .anyRequest()
-                                .authenticated())
+                                .fullyAuthenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(configurer ->
+                        configurer
+                                .authenticationEntryPoint(authenticationEntryPointHandler)
+                )
                 .build();
     }
 }

@@ -1,8 +1,6 @@
 package com.epam.esm.service;
 
 import com.epam.esm.dto.GiftCertificateDto;
-import com.epam.esm.dto.PageRequest;
-import com.epam.esm.entity.GiftCertificate;
 import org.springframework.util.MultiValueMap;
 
 import java.util.List;

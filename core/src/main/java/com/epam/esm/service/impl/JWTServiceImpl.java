@@ -2,6 +2,7 @@ package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
 import com.epam.esm.dto.AuthResponseDto;
+import com.epam.esm.dto.SecurityErrorResponse;
 import com.epam.esm.entity.User;
 import com.epam.esm.exception.ExceptionMessageKey;
 import com.epam.esm.exception.NoSuchEntityException;
@@ -14,6 +15,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -26,17 +28,28 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static com.epam.esm.constant.SecurityConstants.*;
+import static com.epam.esm.exception.ExceptionMessageKey.BAD_JWT_TOKEN;
+import static com.epam.esm.exception.ExceptionMessageKey.UNAUTHORIZED_MESSAGE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 @RequiredArgsConstructor
 public class JWTServiceImpl implements JWTService {
+
+    private final MessageSource messageSource;
     private final UserDao userDao;
 
     @Override
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+
+    @Override
+    public String extractTokenType(String token) {
+        return extractClaim(token, claims -> claims.get(TOKEN_TYPE, String.class));
+    }
+
 
     @Override
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -56,11 +69,12 @@ public class JWTServiceImpl implements JWTService {
         final String refreshToken;
         final String username;
 
-        if (authHeader == null || !authHeader.startsWith(BEARER)) {
-            return;
-        }
+        if (checkHeader(request, response, authHeader)) return;
 
-        refreshToken = authHeader.substring(7);
+        refreshToken = authHeader.substring(BEARER_LENGTH);
+        if (checkTokenType(request, response, refreshToken)) return;
+
+
         username = extractUsername(refreshToken);
         if (username != null) {
             User user = userDao.findByUsername(username)
@@ -72,20 +86,21 @@ public class JWTServiceImpl implements JWTService {
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
         }
+
     }
+
 
     @Override
     public String generateRefreshToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails, EXPIRATION_TIME_REFRESH_TOKEN);
+        HashMap<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put(TOKEN_TYPE, REFRESH_TOKEN);
+        return generateToken(extraClaims, userDetails, EXPIRATION_TIME_REFRESH_TOKEN);
     }
 
     @Override
     public String generateAccessToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails, EXPIRATION_TIME_ACCESS_TOKEN);
-    }
-
-    @Override
-    public String generateAccessToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        HashMap<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put(TOKEN_TYPE, ACCESS_TOKEN);
         return generateToken(extraClaims, userDetails, EXPIRATION_TIME_ACCESS_TOKEN);
     }
 
@@ -122,6 +137,29 @@ public class JWTServiceImpl implements JWTService {
     private Key getSignInKey() {
         byte[] keyBytes = Base64.getDecoder().decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    private boolean checkHeader(HttpServletRequest request, HttpServletResponse response, String authHeader) throws IOException {
+        if (authHeader == null || !authHeader.startsWith(BEARER)) {
+            response.setStatus(UNAUTHORIZED.value());
+            String details = messageSource.getMessage(UNAUTHORIZED_MESSAGE, new String[]{}, request.getLocale());
+            SecurityErrorResponse securityErrorResponse=new SecurityErrorResponse(UNAUTHORIZED.value(),UNAUTHORIZED.name(),details);
+            new ObjectMapper().writeValue(response.getOutputStream(), securityErrorResponse);
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkTokenType(HttpServletRequest request, HttpServletResponse response, String refreshToken) throws IOException {
+        final String tokenType = extractTokenType(refreshToken);
+        if (!tokenType.equals(REFRESH_TOKEN)) {
+            response.setStatus(BAD_REQUEST.value());
+            String details = messageSource.getMessage(BAD_JWT_TOKEN, new String[]{}, request.getLocale());
+            SecurityErrorResponse securityErrorResponse=new SecurityErrorResponse(NOT_ACCEPTABLE.value(), NOT_ACCEPTABLE.name(),details);
+            new ObjectMapper().writeValue(response.getOutputStream(), securityErrorResponse);
+            return true;
+        }
+        return false;
     }
 
 }
