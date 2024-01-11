@@ -40,11 +40,11 @@ public class SecurityConfig {
                                 .fullyAuthenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(configurer ->
                         configurer
                                 .authenticationEntryPoint(authenticationEntryPointHandler)
                 )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
