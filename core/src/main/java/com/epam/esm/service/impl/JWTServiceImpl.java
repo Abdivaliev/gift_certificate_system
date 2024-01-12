@@ -13,7 +13,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,6 @@ import static com.epam.esm.constant.TokenType.REFRESH_TOKEN;
 @PropertySource("classpath:jwt.properties")
 public class JWTServiceImpl implements JWTService {
 
-    private final MessageSource messageSource;
     private final UserDao userDao;
     @Value(value = "${jwt.security.key}")
     private String secretKey;
