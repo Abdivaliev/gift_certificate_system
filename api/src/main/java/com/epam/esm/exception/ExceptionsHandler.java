@@ -93,8 +93,8 @@ public class ExceptionsHandler {
     public final ResponseEntity<Object> handleAccessDeniedException() {
         String details = Translator.toLocale("exception.noRights");
         SecurityErrorResponse securityErrorResponse =
-                new SecurityErrorResponse(METHOD_NOT_ALLOWED_EXCEPTION.getCode(), METHOD_NOT_ALLOWED_EXCEPTION.getReason(), details);
-        return new ResponseEntity<>(securityErrorResponse, METHOD_NOT_ALLOWED);
+                new SecurityErrorResponse(FORBIDDEN_EXCEPTION.getCode(), FORBIDDEN_EXCEPTION.getReason(), details);
+        return new ResponseEntity<>(securityErrorResponse, FORBIDDEN);
     }
 
     @ExceptionHandler(SignatureException.class)
