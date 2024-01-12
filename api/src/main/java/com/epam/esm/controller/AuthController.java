@@ -1,12 +1,15 @@
 package com.epam.esm.controller;
 
 import com.epam.esm.dto.AuthResponseDto;
+import com.epam.esm.dto.SecurityErrorResponse;
 import com.epam.esm.dto.UserDto;
 import com.epam.esm.service.JWTService;
 import com.epam.esm.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.Map;
+
+import static com.epam.esm.exception.ExceptionMessageKey.BAD_JWT_TOKEN;
+import static com.epam.esm.exception.ExceptionMessageKey.UNAUTHORIZED_MESSAGE;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +31,10 @@ import java.io.IOException;
 public class AuthController {
     private final UserService userService;
     private final JWTService jwtService;
+    private final MessageSource messageSource;
 
     @PostMapping(path = "/signUp", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<AuthResponseDto> signUp(@RequestBody UserDto userDto) {
+    public ResponseEntity<Map<String, String>> signUp(@RequestBody UserDto userDto) {
         return ResponseEntity.ok(userService.signUp(userDto));
     }
 
@@ -34,6 +45,25 @@ public class AuthController {
 
     @PostMapping(path = "/refresh-token", consumes = "application/json", produces = "application/json")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        jwtService.refreshToken(request, response);
+
+        final String authHeader = request.getHeader(AUTHORIZATION);
+
+        if (jwtService.checkHeader(authHeader)) {
+            response.setStatus(UNAUTHORIZED.value());
+            String details = messageSource.getMessage(UNAUTHORIZED_MESSAGE, new String[]{}, request.getLocale());
+            SecurityErrorResponse securityErrorResponse = new SecurityErrorResponse(UNAUTHORIZED.value(), UNAUTHORIZED.name(), details);
+            new ObjectMapper().writeValue(response.getOutputStream(), securityErrorResponse);
+        }
+
+        AuthResponseDto result = jwtService.refreshToken(authHeader);
+
+        if (result != null) {
+            new ObjectMapper().writeValue(response.getOutputStream(), result);
+        } else {
+            response.setStatus(BAD_REQUEST.value());
+            String details = messageSource.getMessage(BAD_JWT_TOKEN, new String[]{}, request.getLocale());
+            SecurityErrorResponse securityErrorResponse = new SecurityErrorResponse(BAD_REQUEST.value(), BAD_REQUEST.name(), details);
+            new ObjectMapper().writeValue(response.getOutputStream(), securityErrorResponse);
+        }
     }
 }

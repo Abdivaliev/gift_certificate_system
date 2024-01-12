@@ -2,7 +2,7 @@ package com.epam.esm.exception;
 
 
 import com.epam.esm.dto.SecurityErrorResponse;
-import com.epam.esm.exception.language.Translator;
+import com.epam.esm.config.language.Translator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
@@ -101,7 +101,7 @@ public class ExceptionsHandler {
     public final ResponseEntity<Object> handleSignatureException() {
         String details = Translator.toLocale("exception.badInput");
         SecurityErrorResponse securityErrorResponse =
-                new SecurityErrorResponse(BAD_REQUEST_EXCEPTION.getCode(), BAD_REQUEST_EXCEPTION.getReason(), details);
+                new SecurityErrorResponse(FORBIDDEN_EXCEPTION.getCode(), FORBIDDEN_EXCEPTION.getReason(), details);
         return new ResponseEntity<>(securityErrorResponse, BAD_REQUEST);
     }
 
@@ -109,7 +109,7 @@ public class ExceptionsHandler {
     public final ResponseEntity<Object> handleExpiredJwtException() {
         String details = Translator.toLocale("exception.expiredToken");
         SecurityErrorResponse securityErrorResponse =
-                new SecurityErrorResponse(NOT_ACCEPTABLE.value(), NOT_ACCEPTABLE.name(), details);
-        return new ResponseEntity<>(securityErrorResponse, NOT_ACCEPTABLE);
+                new SecurityErrorResponse(FORBIDDEN_EXCEPTION.getCode(), FORBIDDEN_EXCEPTION.getReason(), details);
+        return new ResponseEntity<>(securityErrorResponse, FORBIDDEN);
     }
 }
