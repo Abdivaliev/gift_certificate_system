@@ -3,8 +3,6 @@ package com.epam.esm.service;
 import com.epam.esm.dto.AuthResponseDto;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Locale;
-
 public interface JWTService {
     String extractUsername(String token);
 

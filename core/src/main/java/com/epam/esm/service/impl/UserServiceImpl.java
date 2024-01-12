@@ -1,7 +1,9 @@
 package com.epam.esm.service.impl;
 
 import com.epam.esm.dao.UserDao;
-import com.epam.esm.dto.*;
+import com.epam.esm.dto.AuthResponseDto;
+import com.epam.esm.dto.PageRequest;
+import com.epam.esm.dto.UserDto;
 import com.epam.esm.dto.converter.Converter;
 import com.epam.esm.entity.Role;
 import com.epam.esm.entity.User;
@@ -16,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

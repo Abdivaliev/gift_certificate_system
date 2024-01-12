@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static com.epam.esm.exception.ExceptionMessageKey.*;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static com.epam.esm.exception.ExceptionMessageKey.BAD_URL_REQUEST;
+import static com.epam.esm.exception.ExceptionMessageKey.ENCODING;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
