@@ -1,17 +1,12 @@
 package com.epam.esm.service;
 
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.epam.esm.dto.AuthResponseDto;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.IOException;
-import java.util.function.Function;
+import java.util.Locale;
 
 public interface JWTService {
     String extractUsername(String token);
-
-    <T> T extractClaim(String token, Function<Claims, T> claimsResolver);
 
     String generateAccessToken(UserDetails userDetails);
 
@@ -21,5 +16,6 @@ public interface JWTService {
 
     boolean isTokenValid(String token, UserDetails userDetails);
 
-    void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    AuthResponseDto refreshToken(String authHeader);
+    boolean checkHeader(String authHeader);
 }

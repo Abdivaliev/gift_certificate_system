@@ -21,6 +21,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 
 import static com.epam.esm.constant.SecurityConstants.*;
+import static com.epam.esm.constant.TokenType.ACCESS_TOKEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Component
@@ -54,7 +55,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             username = jwtService.extractUsername(token);
             String tokenType = jwtService.extractTokenType(token);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null && tokenType.equals(ACCESS_TOKEN)) {
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null && tokenType.equals(ACCESS_TOKEN.getName())) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 if (jwtService.isTokenValid(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

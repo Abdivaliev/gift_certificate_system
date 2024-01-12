@@ -1,4 +1,4 @@
-package com.epam.esm.exception.language;
+package com.epam.esm.config.language;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;

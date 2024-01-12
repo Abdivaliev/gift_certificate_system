@@ -36,7 +36,7 @@ public class Generator implements CommandLineRunner {
     private String ddl;
 
     @Override
-    public void run(String... args) {
+    public void run(String... args) throws IOException {
         if (ddl.equalsIgnoreCase("create") || ddl.equalsIgnoreCase("create-drop")) {
             generateAdmin();
             save1000Users();
@@ -56,7 +56,7 @@ public class Generator implements CommandLineRunner {
         userService.signUp(user);
     }
 
-    private void save1000Tags() {
+    private void save1000Tags() throws IOException {
         Resource resource = resourceLoader.getResource("classpath:google-10000-english.txt");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
@@ -70,12 +70,10 @@ public class Generator implements CommandLineRunner {
                     limit++;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    private void save1000Users() {
+    private void save1000Users() throws IOException {
         Resource resource = resourceLoader.getResource("classpath:google-10000-english.txt");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
@@ -94,12 +92,10 @@ public class Generator implements CommandLineRunner {
                     limit++;
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
-    private void save10000Gifts() {
+    private void save10000Gifts() throws IOException {
         Resource resource = resourceLoader.getResource("classpath:google-10000-english.txt");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
@@ -127,8 +123,6 @@ public class Generator implements CommandLineRunner {
                     giftCertificateCRDService.save(giftCertificateDto);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
     private void save100Orders() {
@@ -144,6 +138,4 @@ public class Generator implements CommandLineRunner {
             orderService.save(orderDto);
         }
     }
-
-
 }

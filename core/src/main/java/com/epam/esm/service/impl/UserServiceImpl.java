@@ -16,8 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import static com.epam.esm.constant.TokenType.ACCESS_TOKEN;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +56,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public AuthResponseDto signUp(UserDto userDto) {
+    public Map<String, String> signUp(UserDto userDto) {
         ExceptionResult exceptionResult = new ExceptionResult();
         UserValidator.validate(userDto, exceptionResult);
         if (!exceptionResult.getExceptionMessages().isEmpty()) {
@@ -71,8 +75,7 @@ public class UserServiceImpl implements UserService {
         user.setRole(Role.USER);
         userDao.save(user);
         String accessToken = jwtService.generateAccessToken(user);
-        String refreshToken = jwtService.generateRefreshToken(user);
-        return new AuthResponseDto(accessToken, refreshToken);
+        return Map.of(ACCESS_TOKEN.getName(), accessToken);
     }
 
     @Override
