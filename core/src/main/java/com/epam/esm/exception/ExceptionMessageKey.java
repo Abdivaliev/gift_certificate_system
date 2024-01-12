@@ -25,7 +25,7 @@ public class ExceptionMessageKey {
     public static final String BAD_USER_PASSWORD = "user.badPassword";
     public static final String INVALID_PAGINATION = "pagination.invalid";
     public static final String UNAUTHORIZED_MESSAGE = "exception.unauthorized";
-    public static final String BAD_REQUEST = "exception.noRights";
+    public static final String BAD_URL_REQUEST = "exception.noRights";
     public static final String BAD_JWT_TOKEN = "exception.badInput";
     public static final String ENCODING = "UTF-8";
 }

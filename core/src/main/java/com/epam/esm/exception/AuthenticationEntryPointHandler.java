@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 import static com.epam.esm.exception.ExceptionMessageKey.*;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
@@ -29,9 +29,9 @@ public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(ENCODING);
-        response.setStatus(UNAUTHORIZED.value());
-        String details = messageSource.getMessage(BAD_REQUEST, new String[]{}, request.getLocale());
-        SecurityErrorResponse securityErrorResponse = new SecurityErrorResponse(UNAUTHORIZED.value(), UNAUTHORIZED.name(), details);
+        response.setStatus(BAD_REQUEST.value());
+        String details = messageSource.getMessage(BAD_URL_REQUEST, new String[]{}, request.getLocale());
+        SecurityErrorResponse securityErrorResponse = new SecurityErrorResponse(BAD_REQUEST.value(), BAD_REQUEST.name(), details);
         new ObjectMapper().writeValue(response.getOutputStream(), securityErrorResponse);
     }
 }
