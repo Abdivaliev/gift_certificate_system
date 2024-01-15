@@ -1,6 +1,5 @@
 package com.epam.esm.exception;
 
-import com.epam.esm.config.app.ObjectMapperSingleton;
 import com.epam.esm.dto.SecurityErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,15 +20,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Component
 public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint {
     private final MessageSource messageSource;
+    private final ObjectMapper objectMapper;
+
 
     @Autowired
-    public AuthenticationEntryPointHandler(MessageSource messageSource) {
+    public AuthenticationEntryPointHandler(MessageSource messageSource, ObjectMapper objectMapper) {
         this.messageSource = messageSource;
+        this.objectMapper = objectMapper;
     }
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        ObjectMapper objectMapper = ObjectMapperSingleton.getInstance();
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(ENCODING);
         response.setStatus(NOT_FOUND.value());

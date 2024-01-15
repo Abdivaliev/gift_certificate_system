@@ -1,6 +1,5 @@
 package com.epam.esm.controller;
 
-import com.epam.esm.config.app.ObjectMapperSingleton;
 import com.epam.esm.dto.AuthResponseDto;
 import com.epam.esm.dto.SecurityErrorResponse;
 import com.epam.esm.dto.UserDto;
@@ -34,6 +33,8 @@ public class AuthController {
     private final UserService userService;
     private final JWTService jwtService;
     private final MessageSource messageSource;
+    private final ObjectMapper objectMapper;
+
 
     @PostMapping(path = "/signUp", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Map<String, String>> signUp(@RequestBody UserDto userDto) {
@@ -47,7 +48,6 @@ public class AuthController {
 
     @PostMapping(path = "/refresh-token", consumes = "application/json", produces = "application/json")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        ObjectMapper objectMapper = ObjectMapperSingleton.getInstance();
 
         final String authHeader = request.getHeader(AUTHORIZATION);
 
