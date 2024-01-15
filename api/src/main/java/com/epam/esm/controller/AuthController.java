@@ -1,5 +1,6 @@
 package com.epam.esm.controller;
 
+import com.epam.esm.config.app.ObjectMapperSingleton;
 import com.epam.esm.dto.AuthResponseDto;
 import com.epam.esm.dto.SecurityErrorResponse;
 import com.epam.esm.dto.UserDto;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.Map;
 
+import static com.epam.esm.constant.SecurityConstants.BEARER;
 import static com.epam.esm.exception.ExceptionMessageKey.BAD_JWT_TOKEN;
 import static com.epam.esm.exception.ExceptionMessageKey.UNAUTHORIZED_MESSAGE;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -45,25 +47,32 @@ public class AuthController {
 
     @PostMapping(path = "/refresh-token", consumes = "application/json", produces = "application/json")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ObjectMapper objectMapper = ObjectMapperSingleton.getInstance();
 
         final String authHeader = request.getHeader(AUTHORIZATION);
 
-        if (jwtService.checkHeader(authHeader)) {
+        if (checkHeader(authHeader)) {
             response.setStatus(UNAUTHORIZED.value());
             String details = messageSource.getMessage(UNAUTHORIZED_MESSAGE, new String[]{}, request.getLocale());
             SecurityErrorResponse securityErrorResponse = new SecurityErrorResponse(UNAUTHORIZED.value(), UNAUTHORIZED.name(), details);
-            new ObjectMapper().writeValue(response.getOutputStream(), securityErrorResponse);
+            objectMapper.writeValue(response.getOutputStream(), securityErrorResponse);
+            return;
         }
 
         AuthResponseDto result = jwtService.refreshToken(authHeader);
 
         if (result != null) {
-            new ObjectMapper().writeValue(response.getOutputStream(), result);
+            objectMapper.writeValue(response.getOutputStream(), result);
         } else {
             response.setStatus(BAD_REQUEST.value());
             String details = messageSource.getMessage(BAD_JWT_TOKEN, new String[]{}, request.getLocale());
             SecurityErrorResponse securityErrorResponse = new SecurityErrorResponse(BAD_REQUEST.value(), BAD_REQUEST.name(), details);
-            new ObjectMapper().writeValue(response.getOutputStream(), securityErrorResponse);
+            objectMapper.writeValue(response.getOutputStream(), securityErrorResponse);
         }
     }
+
+    private boolean checkHeader(String authHeader) {
+        return authHeader == null || !authHeader.startsWith(BEARER);
+    }
+
 }

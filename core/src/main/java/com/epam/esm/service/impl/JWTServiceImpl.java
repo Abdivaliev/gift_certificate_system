@@ -23,7 +23,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
 
-import static com.epam.esm.constant.SecurityConstants.BEARER;
 import static com.epam.esm.constant.SecurityConstants.BEARER_LENGTH;
 import static com.epam.esm.constant.TokenType.ACCESS_TOKEN;
 import static com.epam.esm.constant.TokenType.REFRESH_TOKEN;
@@ -75,11 +74,6 @@ public class JWTServiceImpl implements JWTService {
         }
 
         return null;
-    }
-
-    @Override
-    public boolean checkHeader(String authHeader) {
-        return authHeader == null || !authHeader.startsWith(BEARER);
     }
 
     @Override

@@ -15,5 +15,4 @@ public interface JWTService {
     boolean isTokenValid(String token, UserDetails userDetails);
 
     AuthResponseDto refreshToken(String authHeader);
-    boolean checkHeader(String authHeader);
 }

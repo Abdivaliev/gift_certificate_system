@@ -1,5 +1,6 @@
 package com.epam.esm.exception;
 
+import com.epam.esm.config.app.ObjectMapperSingleton;
 import com.epam.esm.dto.SecurityErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,11 +29,12 @@ public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        ObjectMapper objectMapper = ObjectMapperSingleton.getInstance();
         response.setContentType(APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(ENCODING);
         response.setStatus(NOT_FOUND.value());
         String details = messageSource.getMessage(BAD_URL_REQUEST, new String[]{}, request.getLocale());
         SecurityErrorResponse securityErrorResponse = new SecurityErrorResponse(NOT_FOUND.value(), NOT_FOUND.name(), details);
-        new ObjectMapper().writeValue(response.getOutputStream(), securityErrorResponse);
+        objectMapper.writeValue(response.getOutputStream(), securityErrorResponse);
     }
 }

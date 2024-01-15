@@ -1,4 +1,4 @@
-package com.epam.esm.config;
+package com.epam.esm.config.security;
 
 import com.epam.esm.exception.AuthenticationEntryPointHandler;
 import lombok.RequiredArgsConstructor;
