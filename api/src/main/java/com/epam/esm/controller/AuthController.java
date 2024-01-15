@@ -51,7 +51,7 @@ public class AuthController {
 
         final String authHeader = request.getHeader(AUTHORIZATION);
 
-        if (checkHeader(authHeader)) {
+        if (authHeader == null || !authHeader.startsWith(BEARER)) {
             response.setStatus(UNAUTHORIZED.value());
             String details = messageSource.getMessage(UNAUTHORIZED_MESSAGE, new String[]{}, request.getLocale());
             SecurityErrorResponse securityErrorResponse = new SecurityErrorResponse(UNAUTHORIZED.value(), UNAUTHORIZED.name(), details);
@@ -70,9 +70,4 @@ public class AuthController {
             objectMapper.writeValue(response.getOutputStream(), securityErrorResponse);
         }
     }
-
-    private boolean checkHeader(String authHeader) {
-        return authHeader == null || !authHeader.startsWith(BEARER);
-    }
-
 }
