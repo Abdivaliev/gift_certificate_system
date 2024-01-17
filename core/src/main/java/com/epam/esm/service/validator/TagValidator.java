@@ -14,13 +14,13 @@ public class TagValidator {
 
 
     public void validate(TagDto tagDto, ExceptionResult er) {
-        IdentifiableValidator.validateExistenceOfId(tagDto.getId(), er);
-        validateName(tagDto.getName(), er);
+//        IdentifiableValidator.validateExistenceOfId(tagDto.getId(), er);
+//        validateName(tagDto.getName(), er);
     }
 
     public void validateName(String name, ExceptionResult er) {
-        if (name == null || name.length() < MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME) {
-            er.addException(BAD_TAG_NAME, name);
-        }
+//        if (name == null || name.length() < MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME) {
+//            er.addException(BAD_TAG_NAME, name);
+//        }
     }
 }

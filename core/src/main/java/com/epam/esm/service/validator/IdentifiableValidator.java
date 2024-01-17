@@ -17,23 +17,23 @@ public class IdentifiableValidator {
 
 
     public void validateId(long id, ExceptionResult er) {
-        if (id < MIN_ID) {
-            er.addException(BAD_ID, id);
-        }
+//        if (id < MIN_ID) {
+//            er.addException(BAD_ID, id);
+//        }
     }
 
 
     public void validateExistenceOfId(long id, ExceptionResult er) {
-        if (id != EMPTY_ID) {
-            er.addException(ID_EXISTENCE);
-        }
+//        if (id != EMPTY_ID) {
+//            er.addException(ID_EXISTENCE);
+//        }
     }
 
 
     public void validateSortType(String sortType, ExceptionResult er) {
-        if (!(Objects.equals(ASC, sortType) ||
-                Objects.equals(DESC, sortType))) {
-            er.addException(BAD_SORT_TYPE, sortType);
-        }
+//        if (!(Objects.equals(ASC, sortType) ||
+//                Objects.equals(DESC, sortType))) {
+//            er.addException(BAD_SORT_TYPE, sortType);
+//        }
     }
 }

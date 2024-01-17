@@ -14,24 +14,24 @@ public class UserValidator {
 
 
     public void validate(UserDto userDto, ExceptionResult er) {
-        IdentifiableValidator.validateExistenceOfId(userDto.getId(), er);
-        validateUsername(userDto.getUsername(), er);
-        validatePassword(userDto.getPassword(), er);
-        validateName(userDto.getName(), er);
+//        IdentifiableValidator.validateExistenceOfId(userDto.getId(), er);
+//        validateUsername(userDto.getUsername(), er);
+//        validatePassword(userDto.getPassword(), er);
+//        validateName(userDto.getName(), er);
     }
 
 
     public void validateUsername(String username, ExceptionResult er) {
-        if (username == null) {
-            er.addException(BAD_USERNAME, username);
-        }
+//        if (username == null) {
+//            er.addException(BAD_USERNAME, username);
+//        }
     }
 
 
     public void validatePassword(String password, ExceptionResult er) {
-        if (password == null || password.length() < MIN_LENGTH_PASSWORD) {
-            er.addException(BAD_USER_PASSWORD, password);
-        }
+//        if (password == null || password.length() < MIN_LENGTH_PASSWORD) {
+//            er.addException(BAD_USER_PASSWORD, password);
+//        }
     }
 
     private void validateName(String name, ExceptionResult er) {

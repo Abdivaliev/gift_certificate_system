@@ -24,42 +24,42 @@ public class GiftCertificateValidator {
 
 
     public void validate(GiftCertificateDto giftCertificateDto, ExceptionResult er) {
-        IdentifiableValidator.validateExistenceOfId(giftCertificateDto.getId(), er);
-        validateName(giftCertificateDto.getName(), er);
-        validateDescription(giftCertificateDto.getDescription(), er);
-        validatePrice(giftCertificateDto.getPrice(), er);
-        validateDuration(giftCertificateDto.getDuration(), er);
-        validateListOfTags(giftCertificateDto.getTags(), er);
+//        IdentifiableValidator.validateExistenceOfId(giftCertificateDto.getId(), er);
+//        validateName(giftCertificateDto.getName(), er);
+//        validateDescription(giftCertificateDto.getDescription(), er);
+//        validatePrice(giftCertificateDto.getPrice(), er);
+//        validateDuration(giftCertificateDto.getDuration(), er);
+//        validateListOfTags(giftCertificateDto.getTags(), er);
     }
 
     public void validateForUpdate(GiftCertificateDto giftCertificateDto, ExceptionResult er) {
-        if (giftCertificateDto.getName() != null) {
-            validateName(giftCertificateDto.getName(), er);
-        }
-        if (giftCertificateDto.getDescription() != null) {
-            validateDescription(giftCertificateDto.getDescription(), er);
-        }
-        if (giftCertificateDto.getPrice() != null) {
-            validatePrice(giftCertificateDto.getPrice(), er);
-        }
-        if (giftCertificateDto.getDuration() != 0) {
-            validateDuration(giftCertificateDto.getDuration(), er);
-        }
-        validateListOfTags(giftCertificateDto.getTags(), er);
+//        if (giftCertificateDto.getName() != null) {
+//            validateName(giftCertificateDto.getName(), er);
+//        }
+//        if (giftCertificateDto.getDescription() != null) {
+//            validateDescription(giftCertificateDto.getDescription(), er);
+//        }
+//        if (giftCertificateDto.getPrice() != null) {
+//            validatePrice(giftCertificateDto.getPrice(), er);
+//        }
+//        if (giftCertificateDto.getDuration() != 0) {
+//            validateDuration(giftCertificateDto.getDuration(), er);
+//        }
+//        validateListOfTags(giftCertificateDto.getTags(), er);
     }
 
 
     public void validateListOfTags(Set<TagDto> tagDtoSets, ExceptionResult er) {
-        if (tagDtoSets == null) return;
-        for (TagDto tag : tagDtoSets) {
-            TagValidator.validate(tag, er);
-        }
+//        if (tagDtoSets == null) return;
+//        for (TagDto tag : tagDtoSets) {
+//            TagValidator.validate(tag, er);
+//        }
     }
 
     public void validateName(String name, ExceptionResult er) {
-        if (name == null || name.length() < MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME) {
-            er.addException(BAD_GIFT_CERTIFICATE_NAME, name);
-        }
+//        if (name == null || name.length() < MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME) {
+//            er.addException(BAD_GIFT_CERTIFICATE_NAME, name);
+//        }
     }
 
     private void validateDescription(String description, ExceptionResult er) {
